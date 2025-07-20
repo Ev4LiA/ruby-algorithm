@@ -1,0 +1,58 @@
+plugins:
+  - rubocop-performance
+
+AllCops:
+  TargetRubyVersion: 3.3
+  NewCops: enable
+  Exclude:
+    - "vendor/**/*"
+    - "node_modules/**/*"
+    - ".git/**/*"
+
+# Layout cops
+Layout/LineLength:
+  Max: 120
+
+Layout/MultilineMethodCallIndentation:
+  EnforcedStyle: indented
+
+# Style cops
+Style/Documentation:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+# For algorithm problems, we often use single letter variables
+Naming/MethodParameterName:
+  Enabled: false
+
+Naming/VariableName:
+  Enabled: false
+
+# Allow TODO comments in algorithm files
+Style/CommentAnnotation:
+  Enabled: false
+
+# Metrics cops - relaxed for algorithm code
+# Metrics/MethodLength:
+#  Max: 30
+
+Metrics/CyclomaticComplexity:
+  Max: 10
+
+Metrics/PerceivedComplexity:
+  Max: 10
+
+# Metrics/AbcSize:
+#   Max: 20
+
+# Performance cops
+Performance/StringReplacement:
+  Enabled: true
