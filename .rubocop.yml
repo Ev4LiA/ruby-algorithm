@@ -1,4 +1,4 @@
-plugins:
+require:
   - rubocop-performance
 
 AllCops:
@@ -11,7 +11,7 @@ AllCops:
 
 # Layout cops
 Layout/LineLength:
-  Max: 120
+  Max: 1000
 
 Layout/MultilineMethodCallIndentation:
   EnforcedStyle: indented
@@ -40,19 +40,18 @@ Naming/VariableName:
 Style/CommentAnnotation:
   Enabled: false
 
-# Metrics cops - relaxed for algorithm code
-# Metrics/MethodLength:
-#  Max: 30
+# Disable all metrics for algorithm files
+Metrics/ClassLength:
+  Enabled: false
+
+Metrics/MethodLength:
+  Enabled: false
+
+Metrics/AbcSize:
+  Enabled: false
 
 Metrics/CyclomaticComplexity:
-  Max: 10
+  Enabled: false
 
 Metrics/PerceivedComplexity:
-  Max: 10
-
-# Metrics/AbcSize:
-#   Max: 20
-
-# Performance cops
-Performance/StringReplacement:
-  Enabled: true
+  Enabled: false

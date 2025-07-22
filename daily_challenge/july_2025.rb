@@ -15,8 +15,7 @@ class July2025
   # @param {String} word
   # @param {Integer} k
   # @return {Integer}
-  def possible_string_count_2(word, k)
-  end
+  def possible_string_count_2(word, k); end
 
   # 3304. Find the K-th Character in String Game I
   # @param {Integer} k
@@ -83,7 +82,7 @@ class FindSumPairs
     @nums2 = nums2
     @count_2 = {}
 
-    @nums2.each.with_index do |num, i|
+    @nums2.each.with_index do |num, _i|
       @count_2[num] ||= 0
       @count_2[num] += 1
     end
@@ -349,16 +348,44 @@ class FindSumPairs
   # @param {Integer[]} nums
   # @param {Integer} k
   # @return {Integer}
-  def maximum_length2(nums, k)
-    dp = Array.new(k) { Array.new(k, 0) }
-    res = 0
-    nums.each do |num|
-      num %= k
-      (0...k).each do |prev|
-        dp[prev][num] = dp[num][prev] + 1
-        res = [res, dp[prev][num]].max
-      end
+  # def maximum_length2(nums, k); end
+
+  # 1957. Delete Characters to Make Fancy String
+  # @param {String} s
+  # @return {String}
+  def make_fancy_string(s)
+    res = ""
+    return s if s.length < 3
+
+    res += s[0..1]
+
+    (2...s.length).each do |i|
+      res += s[i] if s[i] != res[res.length - 1] || s[i] != res[res.length - 2]
     end
     res
+  end
+
+  # 1695. Maximum Erasure Value
+  # @param {Integer[]} nums
+  # @return {Integer}
+  def maximum_unique_subarray(nums)
+    n = nums.length
+    seen = []
+    left = 0
+    current_sum = 0
+    max_sum = 0
+
+    (0...n).each do |right|
+      while seen[nums[right]]
+        current_sum -= nums[left]
+        seen[nums[left]] = false
+        left += 1
+      end
+
+      seen[nums[right]] = true
+      current_sum += nums[right]
+      max_sum = [max_sum, current_sum].max
+    end
+    max_sum
   end
 end
