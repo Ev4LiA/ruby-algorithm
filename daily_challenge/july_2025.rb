@@ -388,4 +388,27 @@ class FindSumPairs
     end
     max_sum
   end
+
+  # 2411. Smallest Subarrays With Maximum Bitwise OR
+  # @param {Integer[]} nums
+  # @return {Integer[]}
+  def smallest_subarrays(nums)
+    n = nums.length
+    bit_index = Array.new(31) { -1 }
+    ans = Array.new(n)
+
+    (0...n).reverse_each do |i|
+      j = i
+      31.times do |bit|
+        if (nums[i] & (1 << bit)).zero?
+          j = [j, bit_index[bit]].max if bit_index[bit] != -1
+        else
+          bit_index[bit] = i
+        end
+      end
+
+      ans[i] = j - i + 1
+    end
+    ans
+  end
 end
