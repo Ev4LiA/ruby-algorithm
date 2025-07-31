@@ -1,3 +1,5 @@
+require 'set'
+
 class July2025
   # 3330. Find the Original Typed String I
   # @param {String} word
@@ -410,5 +412,47 @@ class FindSumPairs
       ans[i] = j - i + 1
     end
     ans
+  end
+
+  # 2419. Longest Subarray With Maximum Bitwise AND
+  # @param {Integer[]} nums
+  # @return {Integer}
+  def longest_subarray(nums)
+    max_val = 0
+    ans = 0
+    current_streak = 0
+    nums.each do |num|
+      if max_val < num
+        max_val = num
+        ans = current_streak = 0
+      end
+
+      if max_val == num
+        current_streak += 1
+      else
+        current_streak = 0
+      end
+
+      ans = [ans, current_streak].max
+    end
+    ans
+  end
+
+  # 898. Bitwise ORs of Subarrays
+  # @param {Integer[]} arr
+  # @return {Integer}
+  def subarray_bitwise_o_rs(arr)
+    ans = Set.new
+    cur = Set[0]
+
+    arr.each do |x|
+      cur2 = Set.new
+      cur.each { |y| cur2 << (x | y) }
+      cur2 << x
+      cur = cur2
+      ans.merge(cur)
+    end
+
+    ans.size
   end
 end
