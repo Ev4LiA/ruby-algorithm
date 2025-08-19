@@ -296,4 +296,180 @@ class August2025
     end
     false
   end
+
+  # 2438. Range Product Queries of Powers
+  # @param {Integer} n
+  # @param {Integer[][]} queries
+  # @return {Integer[]}
+  def product_queries(n, queries)
+    bins = []
+    rep = 1
+
+    while n > 0
+      bins << rep if n.odd?
+      n /= 2
+      rep *= 2
+    end
+
+    res = []
+    queries.each do |query|
+      left, right = query
+      res << (bins[left..right].reduce(:*) % ((10**9) + 7))
+    end
+    res
+  end
+
+  # 2787. Ways to Express an Integer as Sum of Powers
+  # @param {Integer} n
+  # @param {Integer} x
+  # @return {Integer}
+  def number_of_ways(n, x)
+    dp = Array.new(n + 1, 0)
+    dp[0] = 1
+
+    (1..n).each do |i|
+      val = i**x
+      break if val > n
+
+      (val..n).reverse_each do |j|
+        dp[j] = (dp[j] + dp[j - val]) % ((10**9) + 7)
+      end
+    end
+
+    dp[n]
+  end
+
+  # 326. Power of Three
+  # @param {Integer} n
+  # @return {Boolean}
+  def is_power_of_three(n)
+    return false if n <= 0
+
+    n /= 3 while (n % 3).zero?
+
+    n == 1
+  end
+
+  # 2264. Largest 3-Same-Digit Number in String
+  # @param {String} num
+  # @return {String}
+  def largest_good_integer(num)
+    max_digit = -1
+    (0..num.length - 3).each do |i|
+      max_digit = [max_digit, num[i].to_i].max if num[i] == num[i + 1] && num[i] == num[i + 2]
+    end
+    max_digit.negative? ? "" : max_digit.to_s * 3
+  end
+
+  # 342. Power of Four
+  # @param {Integer} n
+  # @return {Boolean}
+  def is_power_of_four(n)
+    return false if n <= 0
+
+    n /= 4 while (n % 4).zero?
+    n == 1
+  end
+
+  # 1323. Maximum 69 Number
+  # @param {Integer} num
+  # @return {Integer}
+  def maximum69_number(num)
+    num.to_s.sub("6", "9").to_i
+  end
+
+  # 837. New 21 Game
+  # @param {Integer} n
+  # @param {Integer} k
+  # @param {Integer} max_pts
+  # @return {Float}
+  def new21_game(n, k, max_pts)
+    return 1.0 if k == 0 || n >= k + max_pts
+
+    dp = Array.new(n + 1, 0.0)
+    dp[0] = 1.0
+    window_sum = 1.0 # sum of last max_pts dp values that are < k
+    result = 0.0
+
+    (1..n).each do |i|
+      dp[i] = window_sum / max_pts
+
+      if i < k
+        window_sum += dp[i]
+      else
+        result += dp[i]
+      end
+
+      window_sum -= dp[i - max_pts] if i - max_pts >= 0
+    end
+
+    result
+  end
+
+  # 679. 24 Game
+  # @param {Integer[]} cards
+  # @return {Boolean}
+  def judge_point24(cards)
+    nums = cards.map(&:to_f)
+    eps = 1e-6
+
+    dfs = nil
+    dfs = lambda do |arr|
+      return ((arr[0] - 24.0).abs < eps) if arr.size == 1
+
+      arr.each_index do |i|
+        arr.each_index do |j|
+          next if i == j
+
+          next_arr = []
+          arr.each_index { |k| next_arr << arr[k] if k != i && k != j }
+
+          a = arr[i]
+          b = arr[j]
+
+          [a + b, a - b, b - a, a * b].each do |val|
+            next_arr.push(val)
+            return true if dfs.call(next_arr)
+
+            next_arr.pop
+          end
+
+          unless b.abs < eps
+            next_arr.push(a / b)
+            return true if dfs.call(next_arr)
+
+            next_arr.pop
+          end
+
+          next if a.abs < eps
+
+          next_arr.push(b / a)
+          return true if dfs.call(next_arr)
+
+          next_arr.pop
+        end
+      end
+      false
+    end
+
+    dfs.call(nums)
+  end
+
+  # 2348. Number of Zero-Filled Subarrays
+  # @param {Integer[]} nums
+  # @return {Integer}
+  def zero_filled_subarray(nums)
+    res = 0
+    count = 0
+
+    nums.each do |num|
+      if num.zero?
+        count += 1
+        res += count
+      else
+        count = 0
+      end
+    end
+    res
+  end
 end
