@@ -472,4 +472,460 @@ class August2025
     end
     res
   end
+
+  # 1277. Count Square Submatrices with All Ones
+  # @param {Integer[][]} matrix
+  # @return {Integer}
+  def count_squares(matrix)
+    row = matrix.size
+    col = matrix[0].size
+    dp = Array.new(row + 1) { Array.new(col + 1, 0) }
+    res = 0
+
+    (0...row).each do |i|
+      (0...col).each do |j|
+        if matrix[i][j] == 1
+          dp[i + 1][j + 1] = [dp[i][j], dp[i + 1][j], dp[i][j + 1]].min + 1
+          res += dp[i + 1][j + 1]
+        end
+      end
+    end
+    res
+  end
+
+  # 1504. Count Submatrices With All Ones
+  # @param {Integer[][]} mat
+  # @return {Integer}
+  def num_submat(mat)
+    row = mat.size
+    col = mat[0].size
+    res = 0
+    rows = Array.new(row) { Array.new(col, 0) }
+
+    (0...row).each do |i|
+      (0...col).each do |j|
+        rows[i][j] = if j.zero?
+                       mat[i][j]
+                     else
+                       mat[i][j].zero? ? 0 : rows[i][j - 1] + 1
+                     end
+
+        cur = rows[i][j]
+        i.downto(0) do |k|
+          cur = [cur, rows[k][j]].min
+          break if cur.zero?
+
+          res += cur
+        end
+      end
+    end
+    res
+  end
+
+  # 3195. Find the Minimum Area to Cover All Ones I
+  # @param {Integer[][]} grid
+  # @return {Integer}
+  def minimum_area(grid)
+    row = grid.size
+    col = grid[0].size
+    min_row = row
+    max_row = 0
+    min_col = col
+    max_col = 0
+
+    (0...row).each do |i|
+      (0...col).each do |j|
+        next if grid[i][j].zero?
+
+        min_row = [min_row, i].min
+        max_row = [max_row, i].max
+        min_col = [min_col, j].min
+        max_col = [max_col, j].max
+      end
+    end
+    (max_row - min_row + 1) * (max_col - min_col + 1)
+  end
+
+  # 3197. Find the Minimum Area to Cover All Ones II
+  # @param {Integer[][]} grid
+  # @return {Integer}
+  def minimum_sum(grid)
+    n = grid.size
+    m = grid[0].size
+
+    min_sum2 = lambda do |g, u, d, l, r|
+      min_i = n
+      max_i = -1
+      min_j = m
+      max_j = -1
+
+      (u..d).each do |i|
+        (l..r).each do |j|
+          next if g[i][j].zero?
+
+          min_i = [min_i, i].min
+          max_i = [max_i, i].max
+          min_j = [min_j, j].min
+          max_j = [max_j, j].max
+        end
+      end
+
+      min_i <= max_i ? (max_i - min_i + 1) * (max_j - min_j + 1) : Float::INFINITY / 3
+    end
+
+    rotate = lambda do |vec|
+      r = vec.size
+      c = vec[0].size
+      ret = Array.new(c) { Array.new(r, 0) }
+      (0...r).each do |i|
+        (0...c).each do |j|
+          ret[c - j - 1][i] = vec[i][j]
+        end
+      end
+      ret
+    end
+
+    solve = lambda do |g|
+      n = g.size
+      m = g[0].size
+      res = n * m
+
+      # partition into three rectangles with a horizontal cut and a vertical cut below it
+      (0...n - 1).each do |i|
+        (0...m - 1).each do |j|
+          res = [res,
+                 min_sum2.call(g, 0, i, 0, m - 1) +
+                   min_sum2.call(g, i + 1, n - 1, 0, j) +
+                   min_sum2.call(g, i + 1, n - 1, j + 1, m - 1)].min
+
+          res = [res,
+                 min_sum2.call(g, 0, i, 0, j) +
+                   min_sum2.call(g, 0, i, j + 1, m - 1) +
+                   min_sum2.call(g, i + 1, n - 1, 0, m - 1)].min
+        end
+      end
+
+      # partition into three horizontal stripes
+      (0...n - 2).each do |i|
+        ((i + 1)...n - 1).each do |j|
+          res = [res,
+                 min_sum2.call(g, 0, i, 0, m - 1) +
+                   min_sum2.call(g, i + 1, j, 0, m - 1) +
+                   min_sum2.call(g, j + 1, n - 1, 0, m - 1)].min
+        end
+      end
+
+      res
+    end
+
+    rgrid = rotate.call(grid)
+    [solve.call(grid), solve.call(rgrid)].min
+  end
+
+  # 1493. Longest Subarray of 1's After Deleting One Element
+  # @param {Integer[]} nums
+  # @return {Integer}
+  def longest_subarray(nums)
+    start = 0
+    zero_count = 0
+    res = 0
+    nums.each_with_index do |num, i|
+      zero_count += num.zero? ? 1 : 0
+
+      while zero_count > 1
+        zero_count -= nums[start].zero? ? 1 : 0
+        start += 1
+      end
+      res = [res, i - start].max
+    end
+    res
+  end
+
+  # 498. Diagonal Traverse
+  # @param {Integer[][]} mat
+  # @return {Integer[]}
+  def find_diagonal_order(mat)
+    return [] if mat.empty? || mat[0].empty?
+
+    n = mat.length
+    m = mat[0].length
+
+    row = 0
+    col = 0
+    direction = 1 # 1 => up-right, 0 => down-left (same as Java's flip with 1-direction)
+
+    result = Array.new(n * m)
+    idx = 0
+
+    while row < n && col < m
+      result[idx] = mat[row][col]
+      idx += 1
+
+      new_row = row + (direction == 1 ? -1 : 1)
+      new_col = col + (direction == 1 ? 1 : -1)
+
+      # If out of bounds, move to next head and flip direction
+      if new_row.negative? || new_row == n || new_col.negative? || new_col == m
+        if direction == 1
+          # moving up-right, prefer moving right if possible else move down
+          if col == m - 1
+            row += 1
+          else
+            col += 1
+          end
+        elsif row == n - 1
+          # moving down-left, prefer moving down if possible else move right
+          col += 1
+        else
+          row += 1
+        end
+        direction = 1 - direction
+      else
+        row = new_row
+        col = new_col
+      end
+    end
+
+    result
+  end
+
+  # 3000. Maximum Area of Longest Diagonal Rectangle
+  # @param {Integer[][]} dimensions
+  # @return {Integer}
+  def area_of_max_diagonal(dimensions)
+    max_diagonal = 0
+    max_area = 0
+
+    dimensions.each do |dimension|
+      if (dimension[0]**2) + (dimension[1]**2) > max_diagonal
+        max_diagonal = (dimension[0]**2) + (dimension[1]**2)
+        max_area = dimension[0] * dimension[1]
+      elsif (dimension[0]**2) + (dimension[1]**2) == max_diagonal
+        max_area = [max_area, dimension[0] * dimension[1]].max
+      end
+    end
+    max_area
+  end
+
+  # @param {Integer[][]} grid
+  # @return {Integer}
+  def len_of_v_diagonal(grid)
+    # Return 0 for empty input
+    return 0 if grid.empty? || grid[0].empty?
+
+    m = grid.length
+    n = grid[0].length
+
+    # Four diagonal directions in clockwise order:
+    # 0: down-right  ( +1, +1 )
+    # 1: down-left   ( +1, −1 )
+    # 2: up-left     ( −1, −1 )
+    # 3: up-right    ( −1, +1 )
+    dirs = [[1, 1], [1, -1], [-1, -1], [-1, 1]].freeze
+
+    # memo[x][y][dir][turn] stores the longest length starting **after** (x, y)
+    # when moving in "dir" with `turn` indicating whether the 90° turn is still allowed.
+    # We lazily allocate to keep memory reasonable.
+    memo = Array.new(m) { Array.new(n) { Array.new(4) { Array.new(2, -1) } } }
+
+    # Recursive DFS with memoisation.
+    dfs = lambda do |cx, cy, direction, turn_left, target|
+      nx = cx + dirs[direction][0]
+      ny = cy + dirs[direction][1]
+
+      # Stop if out of bounds or the next value does not match the expected target.
+      return 0 if nx.negative? || ny.negative? || nx >= m || ny >= n || grid[nx][ny] != target
+
+      turn_idx = turn_left ? 1 : 0
+      cached = memo[nx][ny][direction][turn_idx]
+      return cached if cached != -1
+
+      # Continue in the same direction; the next expected value alternates between 2 and 0.
+      next_target = 2 - target
+      max_step = dfs.call(nx, ny, direction, turn_left, next_target)
+
+      # If the 90-degree turn is still available, try turning clockwise once.
+      if turn_left
+        turned_dir = (direction + 1) % 4
+        max_step = [max_step, dfs.call(nx, ny, turned_dir, false, next_target)].max
+      end
+
+      memo[nx][ny][direction][turn_idx] = max_step + 1
+      max_step + 1
+    end
+
+    res = 0
+
+    (0...m).each do |i|
+      (0...n).each do |j|
+        next unless grid[i][j] == 1
+
+        4.times do |dir|
+          res = [res, dfs.call(i, j, dir, true, 2) + 1].max
+        end
+      end
+    end
+
+    res
+  end
+
+  # 3446. Sort Matrix by Diagonals
+  # Given an n x n matrix `grid`, sort each diagonal that starts on:
+  #   • the left border (row i, col 0) in DESCENDING order, then
+  #   • the top border (row 0, col j) – except j = 0 – in ASCENDING order.
+  # Returns the modified matrix.
+  # @param [Integer[][]] grid
+  # @return [Integer[][]]
+  def sort_matrix(grid)
+    n = grid.size
+
+    # 1) diagonals starting from first column (descending sort)
+    (0...n).each do |row_start|
+      diag = []
+      col = 0
+      row = row_start
+      while row < n && col < n
+        diag << grid[row][col]
+        row += 1
+        col += 1
+      end
+
+      diag.sort!.reverse! # descending order
+
+      # write back
+      row = row_start
+      col = 0
+      idx = 0
+      while row < n && col < n
+        grid[row][col] = diag[idx]
+        row += 1
+        col += 1
+        idx += 1
+      end
+    end
+
+    # 2) diagonals starting from top row (ascending sort), skip first cell
+    (1...n).each do |col_start|
+      diag = []
+      row = 0
+      col = col_start
+      while row < n && col < n
+        diag << grid[row][col]
+        row += 1
+        col += 1
+      end
+
+      diag.sort! # ascending order
+
+      # write back
+      row = 0
+      col = col_start
+      idx = 0
+      while row < n && col < n
+        grid[row][col] = diag[idx]
+        row += 1
+        col += 1
+        idx += 1
+      end
+    end
+
+    grid
+  end
+
+  # 3021. Alice and Bob Playing Flower Game
+  # @param {Integer} n
+  # @param {Integer} m
+  # @return {Integer}
+  def flower_game(n, m)
+    (m * n) / 2
+  end
+
+  # 36. Valid Sudoku
+  # @param {Character[][]} board
+  # @return {Boolean}
+  def is_valid_sudoku(board)
+    rows = Array.new(9) { Array.new(9, 0) }
+    cols = Array.new(9) { Array.new(9, 0) }
+    boxes = Array.new(9) { Array.new(9, 0) }
+
+    9.times do |i|
+      9.times do |j|
+        next if board[i][j] == "."
+
+        num = board[i][j].to_i - 1
+        rows[i][num] += 1
+        cols[j][num] += 1
+        boxes[(i / 3 * 3) + (j / 3)][num] += 1
+
+        return false if rows[i][num] > 1 || cols[j][num] > 1 || boxes[(i / 3 * 3) + (j / 3)][num] > 1
+      end
+    end
+    true
+  end
+
+  # 37. Sudoku Solver
+  # @param {Character[][]} board
+  # @return {Void} Do not return anything, modify board in-place instead.
+  def solve_sudoku(board)
+    rows = Array.new(9) { Array.new(9, 0) }
+    cols = Array.new(9) { Array.new(9, 0) }
+    boxes = Array.new(9) { Array.new(9, 0) }
+
+    solved = false
+
+    backtrack = nil
+
+    place_number = lambda do |num, row, col|
+      idx = ((row / 3) * 3) + (col / 3)
+      rows[row][num - 1] += 1
+      cols[col][num - 1] += 1
+      boxes[idx][num - 1] += 1
+      board[row][col] = num.to_s
+    end
+
+    could_place = lambda do |num, row, col|
+      idx = ((row / 3) * 3) + (col / 3)
+      rows[row][num - 1].zero? && cols[col][num - 1].zero? && boxes[idx][num - 1].zero?
+    end
+
+    remove_number = lambda do |num, row, col|
+      idx = ((row / 3) * 3) + (col / 3)
+      rows[row][num - 1] -= 1
+      cols[col][num - 1] -= 1
+      boxes[idx][num - 1] -= 1
+      board[row][col] = "."
+    end
+
+    place_next_numbers = lambda do |row, col|
+      if row == 8 && col == 8
+        solved = true
+      elsif col == 8
+        backtrack.call(row + 1, 0)
+      else
+        backtrack.call(row, col + 1)
+      end
+    end
+
+    backtrack = lambda do |row, col|
+      if board[row][col] == "."
+        (1..9).each do |num|
+          next unless could_place.call(num, row, col)
+
+          place_number.call(num, row, col)
+          place_next_numbers.call(row, col)
+          remove_number.call(num, row, col) unless solved
+        end
+      else
+        place_next_numbers.call(row, col)
+      end
+    end
+
+    9.times do |i|
+      9.times do |j|
+        place_number.call(board[i][j].to_i, i, j) if board[i][j] != "."
+      end
+    end
+
+    backtrack.call(0, 0)
+  end
 end
