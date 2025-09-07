@@ -97,4 +97,110 @@ class September2025
     end
     ans
   end
+
+  # 3027. Find the Number of Ways to Place People II
+  # @param {Integer[][]} points
+  # @return {Integer}
+  def number_of_pairs_ii(points)
+    ans = 0
+    points.sort! { |a, b| a[0] == b[0] ? b[1] - a[1] : a[0] - b[0] }
+
+    (0...points.length - 1).each do |i|
+      point_a = points[i]
+      x_min = point_a[0] - 1
+      x_max = Float::INFINITY
+      y_min = -Float::INFINITY
+      y_max = point_a[1] + 1
+
+      (i + 1...points.length).each do |j|
+        point_b = points[j]
+        next unless point_b[0] > x_min &&
+                    point_b[0] < x_max &&
+                    point_b[1] > y_min &&
+                    point_b[1] < y_max
+
+        ans += 1
+        x_min = point_b[0]
+        y_min = point_b[1]
+      end
+    end
+
+    ans
+  end
+
+  # 3516. Find Closest Person
+  # @param {Integer} x
+  # @param {Integer} y
+  # @param {Integer} z
+  # @return {Integer}
+  def find_closest(x, y, z)
+    dis1 = (z - x).abs
+    dis2 = (z - y).abs
+    return 2 if dis1 > dis2
+    return 1 if dis1 < dis2
+
+    0
+  end
+
+  # 2749. Minimum Operations to Make the Integer Zero
+  # @param {Integer} num1
+  # @param {Integer} num2
+  # @return {Integer}
+  def make_the_integer_zero(num1, num2)
+    k = 1
+    loop do
+      x = num1 - (num2 * k)
+      return -1 if x < k
+
+      # Ruby's count_ones is equivalent to Java's Long.bitCount
+      # to_s(2) converts to binary string, count('1') counts the 1s
+      return k if k >= x.to_s(2).count("1")
+
+      k += 1
+    end
+  end
+
+  # 3495. Minimum Operations to Make Array Elements Zero
+  # @param {Integer[][]} queries
+  # @return {Integer}
+  def min_operations(queries)
+    get_opt = lambda do |num|
+      count = 0
+      i = 1
+      base = 1
+      while base <= num
+        end_number = [base * 2 - 1, num].min
+        count += ((i + 1) / 2) * (end_number - base + 1)
+        base *= 2
+        i += 1
+      end
+      count
+    end
+
+    res = 0
+    queries.each do |query|
+      count1 = get_opt.call(query[1])
+      count2 = get_opt.call(query[0] - 1)
+      res += (count1 - count2 + 1) / 2
+    end
+    res
+  end
+
+  # 1304. Find N Unique Integers Sum up to Zero
+  # @param {Integer} n
+  # @return {Integer[]}
+  def sum_zero(n)
+    ans = Array.new(n, 0)
+    index = 0
+
+    (1..n / 2).each do |i|
+      ans[index] = i
+      ans[index + 1] = -i
+      index += 2
+    end
+    if n.odd?
+      ans[index] = 0
+    end
+    ans
+  end
 end
