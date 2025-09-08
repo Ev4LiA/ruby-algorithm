@@ -169,7 +169,7 @@ class September2025
       i = 1
       base = 1
       while base <= num
-        end_number = [base * 2 - 1, num].min
+        end_number = [(base * 2) - 1, num].min
         count += ((i + 1) / 2) * (end_number - base + 1)
         base *= 2
         i += 1
@@ -198,9 +198,20 @@ class September2025
       ans[index + 1] = -i
       index += 2
     end
-    if n.odd?
-      ans[index] = 0
-    end
+    ans[index] = 0 if n.odd?
     ans
+  end
+
+  # 1317. Convert Integer to the Sum of Two No-Zero Integers
+  # @param {Integer} n
+  # @return {Integer[]}
+  def get_no_zero_integers(n)
+    a = 1
+    b = n - 1
+    while b.to_s.include?("0") || a.to_s.include?("0")
+      a += 1
+      b -= 1
+    end
+    [a, b]
   end
 end
