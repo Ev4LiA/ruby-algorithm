@@ -214,4 +214,42 @@ class September2025
     end
     [a, b]
   end
+
+  # 2327. Number of People Aware of a Secret
+  # @param {Integer} n
+  # @param {Integer} delay
+  # @param {Integer} forget
+  # @return {Integer}
+  def people_aware_of_secret(n, delay, forget)
+    mod = 1_000_000_007
+
+    know   = [[1, 1]] # [day, count] currently aware of the secret
+    share  = []       # [day, count] allowed to share
+    know_cnt  = 1
+    share_cnt = 0
+
+    (2..n).each do |day|
+      # people who reach the sharing threshold today
+      if know.any? && know[0][0] == day - delay
+        d, c = know.shift
+        know_cnt  = (know_cnt - c) % mod
+        share_cnt = (share_cnt + c) % mod
+        share << [d, c]
+      end
+
+      # people who forget the secret today
+      if share.any? && share[0][0] == day - forget
+        _d, c = share.shift
+        share_cnt = (share_cnt - c) % mod
+      end
+
+      # new people learn the secret today
+      unless share.empty?
+        know_cnt = (know_cnt + share_cnt) % mod
+        know << [day, share_cnt]
+      end
+    end
+
+    (know_cnt + share_cnt) % mod
+  end
 end
