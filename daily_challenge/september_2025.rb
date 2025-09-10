@@ -252,4 +252,37 @@ class September2025
 
     (know_cnt + share_cnt) % mod
   end
+
+  # 1733. Minimum Number of People to Teach
+  # @param {Integer} n
+  # @param {Integer[][]} languages
+  # @param {Integer[][]} friendships
+  # @return {Integer}
+  def minimum_teachings(n, languages, friendships)
+    cannot_talk = Set.new
+
+    friendships.each do |u, v|
+      # users are 1-based in input, convert to 0-based indices
+      u_langs = languages[u - 1]
+      v_langs = languages[v - 1]
+
+      # if they share no common language
+      unless (u_langs & v_langs).any?
+        cannot_talk << (u - 1)
+        cannot_talk << (v - 1)
+      end
+    end
+
+    counts   = Array.new(n + 1, 0) # counts[lang_id] = appearances among cannot_talk users
+    max_cnt  = 0
+
+    cannot_talk.each do |idx|
+      languages[idx].each do |lang|
+        counts[lang] += 1
+        max_cnt = counts[lang] if counts[lang] > max_cnt
+      end
+    end
+
+    cannot_talk.size - max_cnt
+  end
 end
