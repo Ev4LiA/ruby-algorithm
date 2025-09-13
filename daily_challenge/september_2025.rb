@@ -285,4 +285,40 @@ class September2025
 
     cannot_talk.size - max_cnt
   end
+
+  # 2785. Sort Vowels in a String
+  # @param {String} s
+  # @return {String}
+  def sort_vowels(s)
+    vowels = s.chars.select { |c| c.match?(/[aeiouAEIOU]/) }
+    vowels.sort!
+    s.chars.map { |c| c.match?(/[aeiouAEIOU]/) ? vowels.shift : c }.join
+  end
+
+  # 3227. Vowels Game in a String
+  # @param {String} s
+  # @return {Boolean}
+  def does_alice_win(s)
+    !!(s =~ /[aeiou]/)
+  end
+
+  # 3541. Find Most Frequent Vowel and Consonant
+  # @param {String} s
+  # @return {Integer}
+  def max_freq_sum(s)
+    vowel = 0
+    consonant = 0
+
+    hash = s.chars.tally
+
+    hash.each do |char, count|
+      if char.match?(/[aeiou]/)
+        vowel = [vowel, count].max
+      else
+        consonant = [consonant, count].max
+      end
+    end
+
+    vowel + consonant
+  end
 end
