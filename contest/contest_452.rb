@@ -1,4 +1,4 @@
-require 'set'
+require "set"
 
 class Contest452
   def can_partition(nums, target)
@@ -9,15 +9,13 @@ class Contest452
     n = nums.length
 
     (1...(1 << n) - 1).each do |mask|
-        subset_product = 1
+      subset_product = 1
 
-        nums.each_with_index do |num, i|
-            if (mask & (1 << i)) != 0
-                subset_product *= num
-            end
-        end
+      nums.each_with_index do |num, i|
+        subset_product *= num if (mask & (1 << i)) != 0
+      end
 
-        return true if subset_product == target
+      return true if subset_product == target
     end
 
     false
@@ -33,13 +31,13 @@ class Contest452
     result = []
 
     # Iterate through all possible top-left corners for k×k submatrices
-    (0..m-k).each do |i|
+    (0..m - k).each do |i|
       row = []
-      (0..n-k).each do |j|
+      (0..n - k).each do |j|
         # Extract all values from k×k submatrix starting at (i,j)
         values = []
-        (i...i+k).each do |x|
-          (j...j+k).each do |y|
+        (i...i + k).each do |x|
+          (j...j + k).each do |y|
             values << grid[x][y]
           end
         end
@@ -53,8 +51,8 @@ class Contest452
         else
           # Find minimum difference between consecutive sorted values
           min_diff = Float::INFINITY
-          (0...unique_values.length-1).each do |idx|
-            diff = (unique_values[idx+1] - unique_values[idx]).abs
+          (0...unique_values.length - 1).each do |idx|
+            diff = (unique_values[idx + 1] - unique_values[idx]).abs
             min_diff = [min_diff, diff].min
           end
           row << min_diff
@@ -73,14 +71,16 @@ class Contest452
     m = classroom.length
     n = classroom[0].length
 
-    start_row, start_col = nil, nil
+    start_row = nil
+    start_col = nil
     litter_positions = []
 
     (0...m).each do |i|
       (0...n).each do |j|
-        if classroom[i][j] == 'S'
-          start_row, start_col = i, j
-        elsif classroom[i][j] == 'L'
+        if classroom[i][j] == "S"
+          start_row = i
+          start_col = j
+        elsif classroom[i][j] == "L"
           litter_positions << [i, j]
         end
       end
@@ -96,19 +96,16 @@ class Contest452
 
     directions = [[0, 1], [0, -1], [1, 0], [-1, 0]]
 
-    while !queue.empty?
+    until queue.empty?
       row, col, curr_energy, collected_mask, moves = queue.shift
 
-      if collected_mask == (1 << total_litter) - 1
-        return moves
-      end
+      return moves if collected_mask == (1 << total_litter) - 1
 
       norm_energy = [curr_energy, energy_cap].min
       state_key = [row, col, norm_energy, collected_mask]
 
-      if visited.key?(state_key)
-        next
-      end
+      next if visited.key?(state_key)
+
       visited[state_key] = true
 
       directions.each do |dr, dc|
@@ -116,29 +113,23 @@ class Contest452
         new_col = col + dc
 
         next if new_row < 0 || new_row >= m || new_col < 0 || new_col >= n
-        next if classroom[new_row][new_col] == 'X'
+        next if classroom[new_row][new_col] == "X"
         next if curr_energy <= 0
 
         new_energy = curr_energy - 1
         new_collected = collected_mask
 
-        if classroom[new_row][new_col] == 'L'
+        if classroom[new_row][new_col] == "L"
           litter_index = litter_positions.index([new_row, new_col])
-          if litter_index && (collected_mask & (1 << litter_index)) == 0
-            new_collected |= (1 << litter_index)
-          end
+          new_collected |= (1 << litter_index) if litter_index && (collected_mask & (1 << litter_index)) == 0
         end
 
-        if classroom[new_row][new_col] == 'R'
-          new_energy = energy
-        end
+        new_energy = energy if classroom[new_row][new_col] == "R"
 
         new_norm_energy = [new_energy, energy_cap].min
         new_state_key = [new_row, new_col, new_norm_energy, new_collected]
 
-        if !visited.key?(new_state_key)
-          queue << [new_row, new_col, new_energy, new_collected, moves + 1]
-        end
+        queue << [new_row, new_col, new_energy, new_collected, moves + 1] unless visited.key?(new_state_key)
       end
     end
 

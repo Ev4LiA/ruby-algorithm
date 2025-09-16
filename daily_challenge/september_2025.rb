@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "set"
+
 class September2025
   # 1792. Maximum Average Pass Ratio
   # @param {Integer[][]} classes
@@ -320,5 +322,62 @@ class September2025
     end
 
     vowel + consonant
+  end
+
+  # 966. Vowel Spellchecker
+  # @param {String[]} wordlist
+  # @param {String[]} queries
+  # @return {String[]}
+  def spellchecker(wordlist, queries)
+    word_perfect = Set.new(wordlist)
+    word_vowel = {}
+    word_cap = {}
+
+    wordlist.each do |word|
+      word_cap[word.downcase] ||= word
+      word_vowel[word.downcase.gsub(/[aeiou]/, "*")] ||= word
+    end
+
+    ans = []
+    queries.each do |query|
+      ans << if word_perfect.include?(query)
+               query
+             elsif word_cap.include?(query.downcase)
+               word_cap[query.downcase]
+             elsif word_vowel.include?(query.downcase.gsub(/[aeiou]/, "*"))
+               word_vowel[query.downcase.gsub(/[aeiou]/, "*")]
+             else
+               ""
+             end
+    end
+
+    ans
+  end
+
+  # 1935. Maximum Number of Words You Can Type
+  # @param {String} text
+  # @param {String} broken_letters
+  # @return {Integer}
+  def can_be_typed_words(text, broken_letters)
+    arr = text.split
+    arr.count { |word| word.chars.all? { |char| !broken_letters.include?(char) } }
+  end
+
+  # 2197. Replace Non-Coprime Numbers in Array
+  # @param {Integer[]} nums
+  # @return {Integer[]}
+  def replace_non_coprimes(nums)
+    stack = []
+    nums.each do |num|
+      x = num
+      until stack.empty?
+        g = stack[-1].gcd(x)
+        break if g == 1
+
+        x = stack.pop.lcm(x) # merge with previous non-coprime
+      end
+      stack << x
+    end
+    stack
   end
 end
