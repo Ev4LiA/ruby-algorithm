@@ -380,4 +380,37 @@ class September2025
     end
     stack
   end
+
+  # 3005. Count Elements With Maximum Frequency
+  # @param {Integer[]} nums
+  # @return {Integer}
+  def max_frequency_elements(nums)
+    frequencies = nums.tally
+    max_freq = frequencies.values.max
+
+    # Single pass to count elements with max frequency
+    frequencies.values.count(max_freq) * max_freq
+  end
+
+  # 165. Compare Version Numbers
+  # @param {String} version1
+  # @param {String} version2
+  # @return {Integer}
+  def compare_version(version1, version2)
+    v1 = version1.split(".").map(&:to_i)
+    v2 = version2.split(".").map(&:to_i)
+
+    # Pad the shorter array with zeros
+    max_length = [v1.length, v2.length].max
+    v1 += [0] * (max_length - v1.length)
+    v2 += [0] * (max_length - v2.length)
+
+    # Compare each revision
+    v1.zip(v2).each do |a, b|
+      return 1 if a > b
+      return -1 if a < b
+    end
+
+    0
+  end
 end
