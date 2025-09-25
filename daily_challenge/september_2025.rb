@@ -413,4 +413,70 @@ class September2025
 
     0
   end
+
+  # 166. Fraction to Recurring Decimal
+  # @param {Integer} numerator
+  # @param {Integer} denominator
+  # @return {String}
+  def fraction_to_decimal(numerator, denominator)
+    return "0" if numerator.zero?
+
+    result = []
+
+    # Handle negative sign
+    result << "-" if (numerator.negative?) ^ (denominator.negative?)
+
+    # Work with absolute values
+    num = numerator.abs
+    den = denominator.abs
+
+    # Integer part
+    result << (num / den).to_s
+    num %= den
+
+    return result.join if num.zero?
+
+    # Fractional part
+    result << "."
+    remainder_map = {} # remainder -> position in result
+
+    while num.nonzero?
+      # If we've seen this remainder before, we have a cycle
+      if remainder_map.key?(num)
+        cycle_start = remainder_map[num]
+        result.insert(cycle_start, "(")
+        result << ")"
+        break
+      end
+
+      # Record the position where this remainder starts
+      remainder_map[num] = result.length
+
+      num *= 10
+      result << (num / den).to_s
+      num %= den
+    end
+
+    result.join
+  end
+
+  # 120. Triangle
+  # @param {Integer[][]} triangle
+  # @return {Integer}
+  def minimum_total(triangle)
+    rows = triangle.size
+    (1...rows).each do |i|
+      row = triangle[i]
+      row.each_with_index do |num, j|
+        row[j] = if j.zero?
+                   num + triangle[i - 1][j]
+                 elsif j == row.size - 1
+                   num + triangle[i - 1][j - 1]
+                 else
+                   num + [triangle[i - 1][j - 1], triangle[i - 1][j]].min
+                 end
+      end
+    end
+    triangle[rows - 1].min
+  end
 end
