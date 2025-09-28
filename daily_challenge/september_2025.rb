@@ -479,4 +479,65 @@ class September2025
     end
     triangle[rows - 1].min
   end
+
+  # 611. Valid Triangle Number
+  # @param {Integer[]} nums
+  # @return {Integer}
+  def triangle_number(nums)
+    nums.sort!
+    count = 0
+    (0...nums.length - 2).each do |i|
+      k = i + 2
+      (i + 1...nums.length - 1).each do |j|
+        break if nums[i].zero? # Convert nums[i] != 0 condition
+
+        k += 1 while k < nums.length && nums[i] + nums[j] > nums[k]
+        count += k - j - 1
+      end
+    end
+    count
+  end
+
+  # 812. Largest Triangle Area
+  # @param {Integer[][]} points
+  # @return {Float}
+  def largest_triangle_area(points)
+    max_area = 0.0
+    n = points.length
+
+    # Try all combinations of 3 points
+    (0...n - 2).each do |i|
+      (i + 1...n - 1).each do |j|
+        (j + 1...n).each do |k|
+          x1, y1 = points[i]
+          x2, y2 = points[j]
+          x3, y3 = points[k]
+
+          # Calculate area using cross product formula
+          # Area = 0.5 * |x1(y2-y3) + x2(y3-y1) + x3(y1-y2)|
+          area = 0.5 * (x1 * (y2 - y3) + x2 * (y3 - y1) + x3 * (y1 - y2)).abs
+          max_area = [max_area, area].max
+        end
+      end
+    end
+
+    max_area
+  end
+
+  # 976. Largest Perimeter Triangle
+  # @param {Integer[]} nums
+# @return {Integer}
+def largest_perimeter(nums)
+  max_perimeter = 0
+
+  nums.sort!
+
+  (0...nums.length - 2).each do |i|
+    if nums[i] + nums[i + 1] > nums[i + 2]
+      max_perimeter = [max_perimeter, nums[i] + nums[i + 1] + nums[i + 2]].max
+    end
+  end
+
+  max_perimeter
+end
 end
