@@ -515,7 +515,7 @@ class September2025
 
           # Calculate area using cross product formula
           # Area = 0.5 * |x1(y2-y3) + x2(y3-y1) + x3(y1-y2)|
-          area = 0.5 * (x1 * (y2 - y3) + x2 * (y3 - y1) + x3 * (y1 - y2)).abs
+          area = 0.5 * ((x1 * (y2 - y3)) + (x2 * (y3 - y1)) + (x3 * (y1 - y2))).abs
           max_area = [max_area, area].max
         end
       end
@@ -526,18 +526,38 @@ class September2025
 
   # 976. Largest Perimeter Triangle
   # @param {Integer[]} nums
-# @return {Integer}
-def largest_perimeter(nums)
-  max_perimeter = 0
+  # @return {Integer}
+  def largest_perimeter(nums)
+    max_perimeter = 0
 
-  nums.sort!
+    nums.sort!
 
-  (0...nums.length - 2).each do |i|
-    if nums[i] + nums[i + 1] > nums[i + 2]
-      max_perimeter = [max_perimeter, nums[i] + nums[i + 1] + nums[i + 2]].max
+    (0...nums.length - 2).each do |i|
+      max_perimeter = [max_perimeter, nums[i] + nums[i + 1] + nums[i + 2]].max if nums[i] + nums[i + 1] > nums[i + 2]
     end
+
+    max_perimeter
   end
 
-  max_perimeter
-end
+  # 2221. Find Triangular Sum of an Array
+  # @param {Integer[]} nums
+  # @return {Integer}
+  def triangular_sum(nums)
+    # Edge case: single element array
+    return nums[0] if nums.length == 1
+
+    # Create working copy to preserve original array
+    current = nums.dup
+
+    # Iteratively reduce array until single element remains
+    while current.length > 1
+      # Create new array with adjacent sums mod 10
+      current = (0...current.length - 1).map do |i|
+        (current[i] + current[i + 1]) % 10
+      end
+    end
+
+    # Return the final triangular sum
+    current[0]
+  end
 end

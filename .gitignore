@@ -69,3 +69,5 @@ build-iPhoneOS/
 build-iPhoneSimulator/
 build/
 out/
+.cursor/
+.specify/
