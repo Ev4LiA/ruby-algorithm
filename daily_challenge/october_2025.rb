@@ -1,3 +1,4 @@
+require "debug"
 class October2025
   # 1518. Water Bottles
   # @param {Integer} num_bottles
@@ -92,5 +93,116 @@ class October2025
     bfs.call(atlantic_queue, atlantic_visited)
 
     pacific_visited & atlantic_visited
+  end
+
+  # 778. Swim in Rising Water
+  # @param {Integer[][]} grid
+  def swim_in_water(grid)
+    m = grid.length
+    n = grid[0].length
+
+    # Should use priority queue
+    pq = []
+    directions = [[0, 1], [1, 0], [0, -1], [-1, 0]]
+    seen = Set.new
+
+    pq << [grid[0][0], 0, 0]
+
+    until pq.empty?
+      pq.sort_by! { |a| a[0] }
+      max_d, r, c = pq.shift
+
+      key = "#{r},#{c}"
+      next if seen.include?(key)
+
+      seen.add(key)
+
+      return max_d if r == m - 1 && c == n - 1
+
+      directions.each do |dir|
+        nr = r + dir[0]
+        nc = c + dir[1]
+        if nr >= 0 && nr < m && nc >= 0 && nc < n && !seen.include?("#{nr},#{nc}")
+          new_d = [max_d, grid[nr][nc]].max
+          pq << [new_d, nr, nc]
+        end
+      end
+    end
+
+    -1
+  end
+
+  # 1488. Avoid Flood in The City
+  # @param {Integer[]} rains
+  # @return {Integer[]}
+  def avoid_flood(rains)
+    n = rains.length
+    ans = Array.new(n, 1)
+    last_rain = {}
+    dry_days = []
+
+    rains.each_with_index do |rain, i|
+      if rain.zero?
+        dry_days << i
+      else
+        ans[i] = -1
+        if last_rain[rain]
+          idx = dry_days.bsearch_index { |d| d > last_rain[rain] }
+
+          return [] if idx.nil?
+
+          dry_day = dry_days.delete_at(idx)
+          ans[dry_day] = rain
+        end
+        last_rain[rain] = i
+      end
+    end
+
+    ans
+  end
+
+  # 3494. Find the Minimum Amount of Time to Brew Potions
+  # @param {Integer[]} skill
+  # @param {Integer[]} mana
+  # @return {Integer}
+  def min_time(skill, mana)
+    n = skill.length
+    time = Array.new(n, 0)
+
+    mana.each do |cost|
+      cur_time = 0
+
+      skill.each_with_index do |s, i|
+        cur_time = [time[i], cur_time].max + (s * cost)
+      end
+
+      time[n - 1] = cur_time
+      (n - 2).downto(0) do |j|
+        time[j] = time[j + 1] - (skill[j + 1] * cost)
+      end
+    end
+
+    time[n - 1]
+  end
+
+  # 3147. Taking Maximum Energy From the Mystic Dungeon
+  # @param {Integer[]} energy
+  # @param {Integer} k
+  # @return {Integer}
+  def maximum_energy(energy, k)
+    n = energy.length
+    ans = -Float::INFINITY
+
+    (n - k...n).each do |i|
+      sum = 0
+
+      j = i
+      while j >= 0
+        sum += energy[j]
+        ans = [ans, sum].max
+        j -= k
+      end
+    end
+    ans
   end
 end
