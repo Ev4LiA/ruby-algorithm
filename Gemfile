@@ -2,7 +2,7 @@ source "https://rubygems.org"
 
 ruby "3.3.0"
 
-gem "debug"  # Ruby debugger
+gem "debug", require: false  # Ruby debugger (loaded manually when needed)
 gem "parser", "~> 3.2.2.3" # Pin parser gem to avoid argument error
 gem "rubocop", "~> 1.57.2" # Pin to a specific version
 gem "rubocop-packaging"

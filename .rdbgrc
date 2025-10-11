@@ -1,0 +1,11 @@
+# Ruby debugger configuration
+# This file automatically loads when using rdbg
+
+# Show source lines when stopped
+show-src-lines: 10
+
+# Enable color output
+use-colorize: true
+
+# Show frames on error
+show-frames: 3

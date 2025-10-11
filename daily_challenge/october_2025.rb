@@ -205,4 +205,48 @@ class October2025
     end
     ans
   end
+
+  # 3186. Maximum Total Damage With Spell Casting
+  # @param {Integer[]} power
+  # @return {Integer}
+  def maximum_total_damage(power)
+    count = power.tally
+
+    keys = count.keys.sort
+    n = keys.size
+    dp = Array.new(n, 0)
+    dp[0] = count[keys[0]] * keys[0]
+
+    binary_search = lambda do |arr, target|
+      l = 0
+      r = arr.size - 1
+      ans = -1
+      while l <= r
+        mid = (l + r) / 2
+        if arr[mid] <= target
+          ans = mid
+          l = mid + 1
+        else
+          r = mid - 1
+        end
+      end
+
+      ans
+    end
+
+    (1...n).each do |i|
+      take = count[keys[i]] * keys[i]
+
+      # Find the last index that is less than keys[i] - 3
+      prev = binary_search.call(keys, keys[i] - 3)
+      take += dp[prev] if prev >= 0
+
+      dp[i] = [dp[i - 1], take].max
+    end
+    dp[n - 1]
+  end
 end
+
+o = October2025.new
+power = [1, 1, 3, 4]
+o.maximum_total_damage(power)
