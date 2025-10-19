@@ -245,8 +245,135 @@ class October2025
     end
     dp[n - 1]
   end
-end
 
-o = October2025.new
-power = [1, 1, 3, 4]
-o.maximum_total_damage(power)
+  # 3539. Find Sum of Array Product of Magical Sequences
+  # @param {Integer} total_count
+  # @param {Integer} target_odd
+  # @param {Integer[]} numbers
+  # @return {Integer}
+  def magical_sum(total_count, target_odd, numbers)
+    mod = (10**9) + 7
+    # Memoization cache
+    @memo = {}
+
+    dfs = lambda do |remaining, odd_needed, index, carry|
+      # Base cases
+      return 0 if remaining < 0 || odd_needed < 0 || remaining + carry.to_s(2).count("1") < odd_needed
+      return (odd_needed == carry.to_s(2).count("1") ? 1 : 0) if remaining == 0
+      return 0 if index >= numbers.length
+
+      # Check memoization
+      key = [remaining, odd_needed, index, carry]
+      return @memo[key] if @memo.key?(key)
+
+      ans = 0
+      (0..remaining).each do |take|
+        # Calculate combinations: C(remaining, take)
+        ways = combination(remaining, take) * power_mod(numbers[index], take, mod) % mod
+        new_carry = carry + take
+        ans += ways * dfs.call(remaining - take, odd_needed - (new_carry % 2), index + 1, new_carry / 2)
+        ans %= mod
+      end
+
+      @memo[key] = ans
+      ans
+    end
+
+    dfs.call(total_count, target_odd, 0, 0)
+  end
+
+  private
+
+  # Helper method to calculate combinations C(n, k)
+  def combination(n, k)
+    return 1 if k == 0 || k == n
+    return 0 if k > n || k < 0
+
+    # Use the formula: C(n, k) = n! / (k! * (n-k)!)
+    # Optimize by calculating C(n, k) = C(n, k-1) * (n-k+1) / k
+    result = 1
+    k = [k, n - k].min # Take advantage of symmetry
+
+    k.times do |i|
+      result = result * (n - i) / (i + 1)
+    end
+
+    result
+  end
+
+  # Helper method to calculate (base^exp) % mod efficiently
+  def power_mod(base, exp, mod)
+    result = 1
+    base = base % mod
+
+    while exp > 0
+      result = (result * base) % mod if exp.odd?
+      exp = exp >> 1
+      base = (base * base) % mod
+    end
+
+    result
+  end
+
+  # 1625. Lexicographically Smallest String After Applying Operations
+  # @param {String} s
+  # @param {Integer} a
+  # @param {Integer} b
+  # @return {String}
+  def find_lex_smallest_string(s, a, b)
+    n = s.length
+    res = s.dup
+    doubled = s + s
+
+    add = lambda do |t, n, a, start|
+      min_val = 10
+      times = 0
+
+      # Evaluate all possible addition counts 0..9 to find minimal digit at t[start]
+      10.times do |i|
+        added = (t[start].ord - "0".ord + (i * a)) % 10
+        if added < min_val
+          min_val = added
+          times = i
+        end
+      end
+
+      # Apply chosen times uniformly across the parity group
+      idx = start
+      while idx < n
+        cur = t[idx].ord - "0".ord
+        t[idx] = (((cur + (times * a)) % 10) + "0".ord).chr
+        idx += 2
+      end
+    end
+
+    gcd = lambda do |x, y|
+      x = x.abs
+      y = y.abs
+      x, y = y, x % y while y != 0
+      x
+    end
+
+    g = gcd.call(b, n)
+
+    # Enumerate rotation positions by steps of gcd(b, n)
+    i = 0
+    while i < n
+      # substring of length n starting at i
+      t = doubled[i, n].chars
+
+      # Minimize odd indices first (1-based odd -> 0-based index 1,3,...)
+      add.call(t, n, a, 1)
+
+      # If b is odd, we can also affect even positions (0-based index 0,2,...)
+      add.call(t, n, a, 0) if b.odd?
+
+      t_str = t.join
+      res = t_str if t_str < res
+
+      i += g
+    end
+
+    res
+  end
+end
