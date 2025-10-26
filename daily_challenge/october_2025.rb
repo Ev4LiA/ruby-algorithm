@@ -282,8 +282,6 @@ class October2025
     dfs.call(total_count, target_odd, 0, 0)
   end
 
-  private
-
   # Helper method to calculate combinations C(n, k)
   def combination(n, k)
     return 1 if k == 0 || k == n
@@ -376,4 +374,33 @@ class October2025
 
     res
   end
+
+  # 2011. Final Value of Variable After Performing Operations
+  # @param {String[]} operations
+  # @return {Integer}
+  def final_value_after_operations(operations)
+    res = 0
+    operations.each do |op|
+      if op.include?("+")
+        res += 1
+      else
+        res -= 1
+      end
+    end
+
+    res
+  end
+
+  # 1716. Calculate Money in Leetcode Bank
+  # @param {Integer} n
+  # @return {Integer}
+  def total_money(n)
+    weeks = n / 7
+    days = n % 7
+
+    (1..days).sum + (days * weeks) + (weeks * (28 + (28 + ((weeks - 1) * 7))) / 2)
+  end
 end
+
+o = October2025.new
+puts o.total_money(10)
