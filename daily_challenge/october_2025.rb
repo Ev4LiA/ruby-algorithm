@@ -400,7 +400,13 @@ class October2025
 
     (1..days).sum + (days * weeks) + (weeks * (28 + (28 + ((weeks - 1) * 7))) / 2)
   end
-end
 
-o = October2025.new
-puts o.total_money(10)
+  # 3370. Smallest Number With All Set Bits
+  # @param {Integer} n
+  # @return {Integer}
+  def smallest_number(n)
+    res = 1
+    res = (res * 2) + 1 while res < n
+    res
+  end
+end
