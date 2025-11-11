@@ -30,4 +30,42 @@ class November2025
 
     res
   end
+
+  # 3542. Minimum Operations to Convert All Elements to Zero
+  # @param {Integer[]} nums
+  # @return {Integer}
+  def min_operations(nums)
+    stack = []
+    res = 0
+    nums.each do |num|
+      stack.pop while !stack.empty? && stack.last > num
+      next if num.zero?
+
+      if stack.empty? || stack.last < num
+        res += 1
+        stack << num
+      end
+    end
+
+    res
+  end
+
+  # 474. Ones and Zeroes
+  # @param {String[]} strs
+  # @param {Integer} m
+  # @param {Integer} n
+  # @return {Integer}
+  def find_max_form(strs, m, n)
+    dp = Array.new(m + 1) { Array.new(n + 1, 0) }
+    strs.each do |str|
+      zeros = str.count("0")
+      ones = str.count("1")
+      m.downto(zeros) do |i|
+        n.downto(ones) do |j|
+          dp[i][j] = [dp[i][j], dp[i - zeros][j - ones] + 1].max
+        end
+      end
+    end
+    dp[m][n]
+  end
 end
