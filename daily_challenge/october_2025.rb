@@ -409,4 +409,25 @@ class October2025
     res = (res * 2) + 1 while res < n
     res
   end
+
+  # 3228. Maximum Number of Operations to Move Ones to the End
+  # # @param {String} s
+  # @return {Integer}
+  def max_operations(s)
+    ones_count = 0
+    res = 0
+    i = 0
+
+    while i < s.length
+      if s[i] == "0"
+        i += 1 while i + 1 < s.length && s[i + 1] == "0"
+        res += ones_count
+      else
+        ones_count += 1
+      end
+
+      i += 1
+    end
+    res
+  end
 end

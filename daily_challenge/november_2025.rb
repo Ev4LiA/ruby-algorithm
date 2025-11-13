@@ -68,4 +68,41 @@ class November2025
     end
     dp[m][n]
   end
+
+  # 2654. Minimum Number of Operations to Make All Array Elements Equal to 1
+  # @param {Integer[]} nums
+  # @return {Integer}
+  def min_operations(nums)
+    n = nums.length
+    num1 = 0
+    g = 0
+    nums.each do |num|
+      num1 += 1 if num == 1
+      g = gcd(g, num)
+    end
+
+    return n - num1 if num1.positive?
+    return -1 if g > 1
+
+    min_len = n
+    nums.each_with_index do |_num, i|
+      current_gcd = 0
+      (i...n).each do |j|
+        current_gcd = gcd(current_gcd, nums[j])
+        if current_gcd == 1
+          min_len = [min_len, j - i + 1].min
+          break
+        end
+      end
+    end
+    min_len + n - 2
+  end
+
+  def gcd(a, b)
+    until b.zero?
+      a %= b
+      a, b = b, a
+    end
+    a
+  end
 end
