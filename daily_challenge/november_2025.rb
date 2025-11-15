@@ -105,4 +105,70 @@ class November2025
     end
     a
   end
+
+  # 2536. Increment Submatrices by One
+  # @param {Integer} n
+  # @param {Integer[][]} queries
+  # @return {Integer[][]}
+  def range_add_queries(n, queries)
+    diff = Array.new(n + 1) { Array.new(n + 1, 0) }
+    queries.each do |query|
+      row1 = query[0]
+      col1 = query[1]
+      row2 = query[2]
+      col2 = query[3]
+      diff[row1][col1] += 1
+      diff[row2 + 1][col1] -= 1
+      diff[row1][col2 + 1] -= 1
+      diff[row2 + 1][col2 + 1] += 1
+    end
+
+    mat = Array.new(n) { Array.new(n, 0) }
+    (0...n).each do |i|
+      (0...n).each do |j|
+        x1 = i.zero? ? 0 : mat[i - 1][j]
+        x2 = j.zero? ? 0 : mat[i][j - 1]
+        x3 = i.zero? || j.zero? ? 0 : mat[i - 1][j - 1]
+        mat[i][j] = diff[i][j] + x1 + x2 - x3
+      end
+    end
+    mat
+  end
+
+  # 3234. Count the Number of Substrings With Dominant Ones
+  # @param {String} s
+  # @return {Integer}
+  def number_of_substrings(s)
+    n = s.length
+    pre = Array.new(n + 1, 0)
+    pre[0] = -1
+    s.each_char.with_index do |_char, i|
+      pre[i + 1] = if i.zero? || (i.positive? && s[i - 1] == "0")
+                     i
+                   else
+                     pre[i]
+                   end
+    end
+
+    # Index:  0  1  2  3  4
+    # String: 1  0  1  1  0
+    # pre:   -1  0  1  1  1  4
+    #       ↑  ↑  ↑  ↑  ↑  ↑
+    #       0  1  2  3  4  5
+
+    res = 0
+    (1..n).each do |i|
+      count0 = s[i - 1] == "0" ? 1 : 0
+      j = i
+
+      while j.positive? && count0 * count0 <= n
+        count1 = (i - pre[j]) - count0
+        res += [j - pre[j], count1 - (count0 * count0) + 1].min if count0 * count0 <= count1
+        j = pre[j]
+        count0 += 1
+      end
+    end
+
+    res
+  end
 end
