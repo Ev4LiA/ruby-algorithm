@@ -171,4 +171,26 @@ class November2025
 
     res
   end
+
+  # 1513. Number of Substrings With Only 1s
+  # @param {String} s
+  # @return {Integer}
+  def num_sub(s)
+    mod = 10 ** 9 + 7
+    ans = 0
+    l = 0
+    n = s.length
+    while l < n
+      unless s[l] == "1"
+        l += 1
+        next
+      end
+
+      r = l
+      r += 1 while r < n && s[r] == "1"
+      ans = (ans + ((r - l + 1) * (r - l) / 2)) % mod
+      l = r
+    end
+    ans
+  end
 end
