@@ -176,7 +176,7 @@ class November2025
   # @param {String} s
   # @return {Integer}
   def num_sub(s)
-    mod = 10 ** 9 + 7
+    mod = (10**9) + 7
     ans = 0
     l = 0
     n = s.length
@@ -192,5 +192,24 @@ class November2025
       l = r
     end
     ans
+  end
+
+  # 1437. Check If All 1's Are at Least Length K Places Away
+  # @param {Integer[]} nums
+  # @param {Integer} k
+  # @return {Boolean}
+  def k_length_apart(nums, k)
+    first_one = nums.find_index(1)
+    return true if first_one.nil?
+
+    (first_one + 1...nums.length).each do |i|
+      next unless nums[i] == 1
+
+      return false if i - first_one - 1 < k
+
+      first_one = i
+    end
+
+    true
   end
 end
