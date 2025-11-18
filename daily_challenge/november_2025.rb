@@ -212,4 +212,19 @@ class November2025
 
     true
   end
+
+  # 717. 1-bit and 2-bit Characters
+  # # @param {Integer[]} bits
+  # @return {Boolean}
+  def is_one_bit_character(bits)
+    i = 0
+    while i < bits.length - 1
+      i += if bits[i] == 0
+             1
+           else
+             2
+           end
+    end
+    i == bits.length - 1
+  end
 end
