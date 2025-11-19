@@ -227,4 +227,16 @@ class November2025
     end
     i == bits.length - 1
   end
+
+  # 2154. Keep Multiplying Found Values by Two
+  # @param {Integer[]} nums
+  # @param {Integer} original
+  # @return {Integer}
+  def find_final_value(nums, original)
+    nums.sort!
+    nums.each do |num|
+      original *= 2 if num == original
+    end
+    original
+  end
 end
