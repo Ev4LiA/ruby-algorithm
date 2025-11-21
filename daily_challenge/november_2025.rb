@@ -228,6 +228,34 @@ class November2025
     i == bits.length - 1
   end
 
+  # 1930. Unique Length-3 Palindromic Subsequences
+  # @param {String} s
+  # @return {Integer}
+  def count_palindromic_subsequence(s)
+    letters = Set.new
+    s.each_char do |c|
+      letters.add(c)
+    end
+
+    ans = 0
+    letters.each do |letter|
+      i = -1
+      j = 0
+      s.each_char.with_index do |c, k|
+        if c == letter
+          i = k if i == -1
+          j = k
+        end
+      end
+      between = Set.new
+      (i + 1...j).each do |k|
+        between.add(s[k])
+      end
+      ans += between.size
+    end
+    ans
+  end
+
   # 2154. Keep Multiplying Found Values by Two
   # @param {Integer[]} nums
   # @param {Integer} original
