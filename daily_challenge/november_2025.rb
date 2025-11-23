@@ -278,4 +278,19 @@ class November2025
     end
     res
   end
+
+  # 1262. Greatest Sum Divisible by Three
+  # @param {Integer[]} nums
+  # @return {Integer}
+  def max_sum_div_three(nums)
+    f = [0, -Float::INFINITY, -Float::INFINITY]
+    nums.each do |num|
+      g = f.dup
+      3.times do |i|
+        g[(i + (num % 3)) % 3] = [g[(i + (num % 3)) % 3], f[i] + num].max
+      end
+      f = g
+    end
+    f[0]
+  end
 end
