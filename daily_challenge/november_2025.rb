@@ -293,4 +293,17 @@ class November2025
     end
     f[0]
   end
+
+  # 1015. Smallest Integer Divisible by K
+  # @param {Integer} k
+  # @return {Integer}
+  def smallest_repunit_div_by_k(k)
+    remainder = 0
+    (1..k).each do |n|
+      remainder = ((remainder * 10) + 1) % k
+      return n if remainder == 0
+    end
+
+    -1
+  end
 end
