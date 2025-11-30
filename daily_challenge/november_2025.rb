@@ -306,4 +306,28 @@ class November2025
 
     -1
   end
+
+  # 1590. Make Sum Divisible by P
+  # @param {Integer[]} nums
+  # @param {Integer} p
+  # @return {Integer}
+  def min_subarray(nums, p)
+    target = nums.sum % p
+
+    return 0 if target.zero?
+
+    mod_map = Hash.new(0)
+    mod_map[0] = -1
+    min_len = Float::INFINITY
+    current_sum = 0
+    nums.each_with_index do |num, i|
+      current_sum = (current_sum + num) % p
+      needed = (current_sum - target + p) % p
+      min_len = [min_len, i - mod_map[needed]].min if mod_map.key?(needed)
+
+      mod_map[current_sum] = i
+    end
+
+    min_len == Float::INFINITY ? -1 : min_len
+  end
 end
