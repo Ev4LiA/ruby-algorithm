@@ -312,22 +312,38 @@ class November2025
   # @param {Integer} p
   # @return {Integer}
   def min_subarray(nums, p)
-    target = nums.sum % p
+    n = nums.length
 
-    return 0 if target.zero?
-
-    mod_map = Hash.new(0)
-    mod_map[0] = -1
-    min_len = Float::INFINITY
-    current_sum = 0
-    nums.each_with_index do |num, i|
-      current_sum = (current_sum + num) % p
-      needed = (current_sum - target + p) % p
-      min_len = [min_len, i - mod_map[needed]].min if mod_map.key?(needed)
-
-      mod_map[current_sum] = i
+    total_mod = 0
+    nums.each do |num|
+      total_mod = (total_mod + num) % p
     end
 
-    min_len == Float::INFINITY ? -1 : min_len
+    target = total_mod % p
+    return 0 if target.zero? # Already divisible by p
+
+    # Step 2: Hash to track prefix sum mod p -> latest index
+    mod_map = {}
+    mod_map[0] = -1 # Handle prefix case
+    current_mod = 0
+    min_len = n
+
+    # Step 3: Iterate and update minimum removable subarray length
+    nums.each_with_index do |num, i|
+      current_mod = (current_mod + num) % p
+
+      # What remainder we need to have seen before
+      needed = (current_mod - target + p) % p
+
+      if mod_map.key?(needed)
+        min_len = [min_len, i - mod_map[needed]].min
+      end
+
+      # Store latest index for this remainder (latest is correct to minimize length)
+      mod_map[current_mod] = i
+    end
+
+    # Step 4: Result
+    min_len == n ? -1 : min_len
   end
 end
