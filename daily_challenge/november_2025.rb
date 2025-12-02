@@ -268,6 +268,14 @@ class November2025
     original
   end
 
+  # 1018. Binary Prefix Divisible By 5
+  # @param {Integer[]} nums
+  # @return {Boolean[]}
+  def prefixes_div_by5(nums)
+    num = 0
+    nums.map { |n| ((num = ((num * 2) + n)) % 5).zero? }
+  end
+
   # 3190. Find Minimum Operations to Make All Elements Divisible by Three
   # @param {Integer[]} nums
   # @return {Integer}
