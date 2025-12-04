@@ -86,4 +86,22 @@ class December2025
 
     ans
   end
+
+  # 2211. Count Collisions on a Road
+  # @param {String} directions
+  # @return {Integer}
+  def count_collisions(directions)
+    res = 0
+    l = 0
+    n = directions.length
+    r = n - 1
+
+    l += 1 while l < n && directions[l] == "L"
+    r -= 1 while r >= 0 && directions[r] == "R"
+
+    (l..r).each do |i|
+      res += 1 if directions[i] != "S"
+    end
+    res
+  end
 end
