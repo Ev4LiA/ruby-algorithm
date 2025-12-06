@@ -104,4 +104,77 @@ class December2025
     end
     res
   end
+
+  # 3432. Count Partitions with Even Sum Difference
+  # @param {Integer[]} nums
+  # @return {Integer}
+  def count_partitions_with_even_sum_difference(nums)
+    nums.sum.even? ? nums.length - 1 : 0
+  end
+
+  # 3578. Count Partitions With Max-Min Difference at Most K
+  # @param {Integer[]} nums
+  # @param {Integer} k
+  # @return {Integer}
+  def count_partitions(nums, k)
+    n = nums.length
+    mod = (10**9) + 7
+    dp = Array.new(n + 1, 0)
+    prefix = Array.new(n + 1, 0)
+    cnt = Hash.new(0)
+
+    dp[0] = 1
+    prefix[0] = 1
+    j = 0
+
+    (0...n).each do |i|
+      cnt[nums[i]] += 1
+      while j <= i && cnt.keys.max - cnt.keys.min > k
+        cnt[nums[j]] -= 1
+        cnt.delete(nums[j]) if cnt[nums[j]].zero?
+        j += 1
+      end
+      dp[i + 1] = (prefix[i] - (j.positive? ? prefix[j - 1] : 0) + mod) % mod
+      prefix[i + 1] = (prefix[i] + dp[i + 1]) % mod
+    end
+    dp[n]
+  end
+
+  def count_partitions2(nums, k)
+    n = nums.length
+    mod = (10**9) + 7
+    dp = Array.new(n + 1, 0)
+    prefix = Array.new(n + 1, 0)
+
+    min_q = [] # deque of indices for minimums (increasing values)
+    max_q = [] # deque of indices for maximums (decreasing values)
+
+    dp[0] = 1
+    prefix[0] = 1
+
+    j = 0
+    (0...n).each do |i|
+      # maintain max deque (values decreasing)
+      max_q.pop while !max_q.empty? && nums[max_q[-1]] <= nums[i]
+      max_q << i
+
+      # maintain min deque (values increasing)
+      min_q.pop while !min_q.empty? && nums[min_q[-1]] >= nums[i]
+      min_q << i
+
+      # adjust window so max - min <= k
+      while !max_q.empty? && !min_q.empty? && (nums[max_q[0]] - nums[min_q[0]] > k)
+        max_q.shift if max_q[0] == j
+        min_q.shift if min_q[0] == j
+        j += 1
+      end
+
+      left_prefix = j > 0 ? prefix[j - 1] : 0
+      dp[i + 1] = (prefix[i] - left_prefix) % mod
+      dp[i + 1] += mod if dp[i + 1] < 0
+      prefix[i + 1] = (prefix[i] + dp[i + 1]) % mod
+    end
+
+    dp[n]
+  end
 end
