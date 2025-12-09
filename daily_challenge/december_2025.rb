@@ -177,4 +177,45 @@ class December2025
 
     dp[n]
   end
+
+  # 1925. Count Square Sum Triples
+  # @param {Integer} n
+  # @return {Integer}
+  def count_triples(n)
+    target = Hash.new(0)
+    (1..n).each do |i|
+      target[i * i] += 1
+    end
+
+    count = 0
+    (1..n).each do |a|
+      (1..n).each do |b|
+        count += 1 if target.include?(a * a + b * b)
+      end
+    end
+    count
+  end
+
+  # 3583. Count Special Triplets
+  # @param {Integer[]} nums
+  # @return {Integer}
+  def special_triplets(nums)
+    n = nums.length
+    count = 0
+    mod = (10**9) + 7
+
+    total_freq = Hash.new(0)
+    nums.each { |num| total_freq[num] += 1 }
+    left_freq = Hash.new(0)
+
+    (0...n).each do |j|
+      target = nums[j] * 2
+      right_freq = total_freq[target] - left_freq[target]
+      right_freq -= 1 if nums[j] == target
+      count = (count + (left_freq[target] * right_freq)) % mod
+      left_freq[nums[j]] += 1
+    end
+
+    count
+  end
 end
