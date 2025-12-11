@@ -190,7 +190,7 @@ class December2025
     count = 0
     (1..n).each do |a|
       (1..n).each do |b|
-        count += 1 if target.include?(a * a + b * b)
+        count += 1 if target.include?((a * a) + (b * b))
       end
     end
     count
@@ -217,5 +217,52 @@ class December2025
     end
 
     count
+  end
+
+  # 3577. Count the Number of Computer Unlocking Permutations
+  # @param {Integer[]} complexity
+  # @return {Integer}
+  def count_permutations(complexity)
+    n = complexity.length
+    mod = (10**9) + 7
+    (1...n).each do |i|
+      return 0 if complexity[i] <= complexity[0]
+    end
+
+    ans = 1
+    (2...n).each do |i|
+      ans = (ans * i) % mod
+    end
+
+    ans
+  end
+
+  # 3531. Count Covered Buildings
+  # @param {Integer} n
+  # @param {Integer[][]} buildings
+  # @return {Integer}
+  def count_covered_buildings(n, buildings)
+    max_row = Array.new(n + 1, 0)
+    min_row = Array.new(n + 1, n + 1)
+    max_col = Array.new(n + 1, 0)
+    min_col = Array.new(n + 1, n + 1)
+
+    buildings.each do |building|
+      x = building[0]
+      y = building[1]
+
+      max_row[y] = [max_row[y], x].max
+      min_row[y] = [min_row[y], x].min
+      max_col[x] = [max_col[x], y].max
+      min_col[x] = [min_col[x], y].min
+    end
+
+    res = 0
+    buildings.each do |building|
+      x = building[0]
+      y = building[1]
+      res += 1 if x > min_row[y] && x < max_row[y] && y > min_col[x] && y < max_col[x]
+    end
+    res
   end
 end
