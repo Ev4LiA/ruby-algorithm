@@ -265,4 +265,23 @@ class December2025
     end
     res
   end
+
+  # 944. Delete Columns to Make Sorted
+  # @param {String[]} strs
+  # @return {Integer}
+  def min_deletion_size(strs)
+    m = strs[0].size
+    n = strs.size
+    count = 0
+
+    (0...m).each do |j|
+      (1...n).each do |i|
+        if strs[i][j] < strs[i - 1][j]
+          count += 1
+          break
+        end
+      end
+    end
+    count
+  end
 end
