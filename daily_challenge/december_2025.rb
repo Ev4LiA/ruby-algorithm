@@ -284,4 +284,24 @@ class December2025
     end
     count
   end
+
+  # 1351. Count Negative Numbers in a Sorted Matrix
+  # @param {Integer[][]} grid
+  # @return {Integer}
+  def count_negatives(grid)
+    count = 0
+    i = grid.length - 1
+    j = 0
+
+    while i >= 0 && j < grid[0].length
+      if grid[i][j] < 0
+        count += grid[0].length - j
+        i -= 1
+      else
+        j += 1
+      end
+    end
+
+    count
+  end
 end
