@@ -13,4 +13,16 @@ class January2026
     end
     [1] + digits
   end
+
+  # 961. N-Repeated Element in Size 2N Array
+  # @param {Integer[]} nums
+  # @return {Integer}
+  def repeated_n_times(nums)
+    hash = Hash.new(0)
+
+    nums.each do |n|
+      hash[n] += 1
+      return n if hash[n] == 2
+    end
+  end
 end
