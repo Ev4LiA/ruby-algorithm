@@ -53,14 +53,33 @@ class January2026
       (1..Math.sqrt(num)).each do |i|
         if (num % i).zero?
           divisors << i
-          divisors << num / i if i != num / i
+          divisors << (num / i) if i != num / i
         end
       end
-      if divisors.length == 4
-        sum += divisors.sum
-      end
+      sum += divisors.sum if divisors.length == 4
     end
 
     sum
+  end
+
+  # 1975. Maximum Matrix Sum
+  # @param {Integer[][]} matrix
+  # @return {Integer}
+  def max_matrix_sum(matrix)
+    total_sum = 0
+    min_abs_val = Float::INFINITY
+    negative_count = 0
+
+    matrix.each do |row|
+      row.each do |val|
+        total_sum += val.abs
+        negative_count += 1 if val < 0
+        min_abs_val = [min_abs_val, val.abs].min
+      end
+    end
+
+    total_sum -= 2 * min_abs_val if negative_count.odd?
+
+    total_sum
   end
 end
