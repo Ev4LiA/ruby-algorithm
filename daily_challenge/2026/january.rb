@@ -82,4 +82,40 @@ class January2026
 
     total_sum
   end
+
+  # 1161. Maximum Level Sum of a Binary Tree
+  # Definition for a binary tree node.
+  # class TreeNode
+  #     attr_accessor :val, :left, :right
+  #     def initialize(val = 0, left = nil, right = nil)
+  #         @val = val
+  #         @left = left
+  #         @right = right
+  #     end
+  # end
+  # @param {TreeNode} root
+  # @return {Integer}
+  def max_level_sum(root)
+    max_sum = -Float::INFINITY
+    ans = 0
+    level = 0
+    queue = [root]
+    until queue.empty?
+      level += 1
+
+      level_sum = 0
+      level_size = queue.size
+      level_size.times do
+        node = queue.shift
+        level_sum += node.val
+        queue << node.left if node.left
+        queue << node.right if node.right
+      end
+      if level_sum > max_sum
+        max_sum = level_sum
+        ans = level
+      end
+    end
+    ans
+  end
 end
