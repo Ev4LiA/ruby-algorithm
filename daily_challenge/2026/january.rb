@@ -118,4 +118,47 @@ class January2026
     end
     ans
   end
+
+  # 85. Maximal Rectangle
+  # @param {Character[][]} matrix
+  # @return {Integer}
+  def maximal_rectangle(matrix)
+    return 0 if matrix.empty? || matrix[0].empty?
+
+    m = matrix.size
+    n = matrix[0].size
+    max_area = 0
+    hist = Array.new(n, 0)
+
+    (0...m).each do |i|
+      (0...n).each do |j|
+        if matrix[i][j] == "1"
+          hist[j] += 1
+        else
+          hist[j] = 0
+        end
+      end
+      max_area = [max_area, area(hist)].max
+    end
+    max_area
+  end
+
+  def area(hist)
+    n = hist.size
+    max_area = 0
+    stack = [] # Stores indices
+
+    # Add a sentinel 0 at the end to ensure all bars in the stack are processed
+    (0..n).each do |i|
+      h = (i == n) ? 0 : hist[i]
+
+      while !stack.empty? && h < hist[stack.last]
+        height = hist[stack.pop]
+        width = stack.empty? ? i : i - stack.last - 1
+        max_area = [max_area, height * width].max
+      end
+      stack.push(i)
+    end
+    max_area
+  end
 end
