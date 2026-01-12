@@ -150,7 +150,7 @@ class January2026
 
     # Add a sentinel 0 at the end to ensure all bars in the stack are processed
     (0..n).each do |i|
-      h = (i == n) ? 0 : hist[i]
+      h = i == n ? 0 : hist[i]
 
       while !stack.empty? && h < hist[stack.last]
         height = hist[stack.pop]
@@ -160,5 +160,20 @@ class January2026
       stack.push(i)
     end
     max_area
+  end
+
+  # 1266. Minimum Time Visiting All Points
+  # @param {Integer[][]} points
+  # @return {Integer}
+  def min_time_to_visit_all_points(points)
+    ans = 0
+    (0...points.length - 1).each do |i|
+      currX = points[i][0]
+      currY = points[i][1]
+      targetX = points[i + 1][0]
+      targetY = points[i + 1][1]
+      ans += [(targetX - currX).abs, (targetY - currY).abs].max
+    end
+    ans
   end
 end
