@@ -176,4 +176,44 @@ class January2026
     end
     ans
   end
+
+  # 3453. Separate Squares I
+  # @param {Integer[][]} squares
+  # @return {Float}
+  def separate_squares(squares)
+    max_y = 0.0
+    total_area = 0.0
+
+    squares.each do |sq|
+      y = sq[1]
+      l = sq[2]
+      total_area += (l.to_f * l.to_f)
+      max_y = [max_y, y.to_f + l.to_f].max
+    end
+
+    lo = 0.0
+    hi = max_y
+    eps = 1e-5
+
+    while (hi - lo).abs > eps
+      mid = (hi + lo) / 2.0
+      if check(mid, squares, total_area)
+        hi = mid
+      else
+        lo = mid
+      end
+    end
+
+    hi
+  end
+
+  def check(limit_y, squares, total_area)
+    area = 0.0
+    squares.each do |sq|
+      y = sq[1].to_f
+      l = sq[2].to_f
+      area += l * [limit_y - y, l].min if y < limit_y
+    end
+    area >= total_area / 2.0
+  end
 end
