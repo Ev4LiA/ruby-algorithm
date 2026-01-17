@@ -216,4 +216,46 @@ class January2026
     end
     area >= total_area / 2.0
   end
+
+  # 3047. Find the Largest Area of Square Inside Two Rectangles
+  # @param {Integer[][]} bottom_left
+  # @param {Integer[][]} top_right
+  # @return {Integer}
+  def largest_square_area(bottom_left, top_right)
+    n = bottom_left.length
+    max_square_area = 0
+
+    # Iterate through all unique pairs of rectangles
+    (0...n).each do |i|
+      (i + 1...n).each do |j|
+        # Coordinates for rectangle i
+        x1_i, y1_i = bottom_left[i]
+        x2_i, y2_i = top_right[i]
+
+        # Coordinates for rectangle j
+        x1_j, y1_j = bottom_left[j]
+        x2_j, y2_j = top_right[j]
+
+        # Calculate the intersection rectangle's coordinates
+        ix1 = [x1_i, x1_j].max
+        iy1 = [y1_i, y1_j].max
+        ix2 = [x2_i, x2_j].min
+        iy2 = [y2_i, y2_j].min
+
+        # Calculate width and height of the intersection
+        width = ix2 - ix1
+        height = iy2 - iy1
+
+        # If there's a valid intersection with positive width and height
+        next unless width > 0 && height > 0
+
+        # The side length of the largest square is the minimum of the intersection's dimensions
+        side = [width, height].min
+        current_square_area = side * side
+        max_square_area = [max_square_area, current_square_area].max
+      end
+    end
+
+    max_square_area
+  end
 end
