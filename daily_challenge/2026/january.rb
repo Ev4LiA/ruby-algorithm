@@ -258,4 +258,69 @@ class January2026
 
     max_square_area
   end
+
+  # 1895. Largest Magic Square
+  # @param {Integer[][]} grid
+  # @return {Integer}
+  def largest_magic_square(grid)
+    m = grid.length
+    n = grid[0].length
+
+    row_prefix_sum = Array.new(m) { Array.new(n + 1, 0) }
+    (0...m).each do |r|
+      (0...n).each do |c|
+        row_prefix_sum[r][c + 1] = row_prefix_sum[r][c] + grid[r][c]
+      end
+    end
+
+    col_prefix_sum = Array.new(m + 1) { Array.new(n, 0) }
+    (0...n).each do |c|
+      (0...m).each do |r|
+        col_prefix_sum[r + 1][c] = col_prefix_sum[r][c] + grid[r][c]
+      end
+    end
+
+    ([m, n].min).downto(2) do |k|
+      (0..m - k).each do |r|
+        (0..n - k).each do |c|
+          diag1_sum = 0
+          (0...k).each do |i|
+            diag1_sum += grid[r + i][c + i]
+          end
+
+          diag2_sum = 0
+          (0...k).each do |i|
+            diag2_sum += grid[r + i][c + k - 1 - i]
+          end
+
+          next if diag1_sum != diag2_sum
+
+          is_magic = true
+          magic_sum = diag1_sum
+
+          (0...k).each do |i|
+            row_sum = row_prefix_sum[r + i][c + k] - row_prefix_sum[r + i][c]
+            if row_sum != magic_sum
+              is_magic = false
+              break
+            end
+          end
+
+          next unless is_magic
+
+          (0...k).each do |i|
+            col_sum = col_prefix_sum[r + k][c + i] - col_prefix_sum[r][c + i]
+            if col_sum != magic_sum
+              is_magic = false
+              break
+            end
+          end
+
+          return k if is_magic
+        end
+      end
+    end
+
+    1
+  end
 end
