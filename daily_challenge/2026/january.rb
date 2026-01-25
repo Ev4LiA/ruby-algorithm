@@ -280,7 +280,7 @@ class January2026
       end
     end
 
-    ([m, n].min).downto(2) do |k|
+    [m, n].min.downto(2) do |k|
       (0..m - k).each do |r|
         (0..n - k).each do |c|
           diag1_sum = 0
@@ -322,5 +322,26 @@ class January2026
     end
 
     1
+  end
+
+  # 1877. Minimize Maximum Pair Sum in Array
+  # @param {Integer[]} nums
+  # @return {Integer}
+  def min_pair_sum(nums)
+    nums.sort!
+    max_sum = 0
+    (0...nums.length / 2).each do |i|
+      max_sum = [max_sum, nums[i] + nums[nums.length - i - 1]].max
+    end
+    max_sum
+  end
+
+  # 1984. Minimum Difference Between Highest and Lowest of K Scores
+  # @param {Integer[]} nums
+  # @param {Integer} k
+  # @return {Integer}
+  def minimum_difference(nums, k)
+    nums.sort!
+    (0...nums.length - k + 1).map { |i| nums[i + k - 1] - nums[i] }.min
   end
 end
