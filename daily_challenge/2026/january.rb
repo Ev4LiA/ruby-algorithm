@@ -344,4 +344,23 @@ class January2026
     nums.sort!
     (0...nums.length - k + 1).map { |i| nums[i + k - 1] - nums[i] }.min
   end
+
+  # 1200. Minimum Absolute Difference
+  # @param {Integer[]} arr
+  # @return {Integer[][]}
+  def minimum_abs_difference(arr)
+    arr.sort!
+    min_diff = Float::INFINITY
+    pairs = []
+    (0...arr.length - 1).each do |i|
+      diff = arr[i + 1] - arr[i]
+      if diff < min_diff
+        min_diff = diff
+        pairs = [[arr[i], arr[i + 1]]]
+      elsif diff == min_diff
+        pairs << [arr[i], arr[i + 1]]
+      end
+    end
+    pairs
+  end
 end
