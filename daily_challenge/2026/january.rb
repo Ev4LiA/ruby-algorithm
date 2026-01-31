@@ -363,4 +363,12 @@ class January2026
     end
     pairs
   end
+
+  # 744. Find Smallest Letter Greater Than Target
+  # @param {Character[]} letters
+  # @param {Character} target
+  # @return {Character}
+  def next_greatest_letter(letters, target)
+    letters.find { |letter| letter > target } || letters.first
+  end
 end

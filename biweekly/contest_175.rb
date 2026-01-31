@@ -1,4 +1,28 @@
 class Contest175
+  # @param {String} s
+  # @return {String}
+  def reverse_by_type(s)
+    chars = s.chars
+    letter_indices = []
+    letter_chars = []
+    special_indices = []
+    special_chars = []
+
+    chars.each_with_index do |c, i|
+      if c.between?('a', 'z')
+        letter_indices << i
+        letter_chars << c
+      else
+        special_indices << i
+        special_chars << c
+      end
+    end
+
+    result = chars.dup
+    letter_chars.reverse.each_with_index { |c, i| result[letter_indices[i]] = c }
+    special_chars.reverse.each_with_index { |c, i| result[special_indices[i]] = c }
+    result.join
+  end
 
   # @param {Integer[]} nums
   # @return {Integer}
@@ -25,11 +49,11 @@ class Contest175
     # If k is around 2*10^5, ops (nonPositive) would be around nums.length (10^5).
     # k*k would be (2*10^5)^2 = 4*10^10. 10^5 <= 4*10^10 is true.
     # So an upper bound of 2*10^5 is sufficient.
-    high = 200000
+    high = 200_000
     ans = high # Initialize ans with a value that is guaranteed to be a valid k, if found.
 
     while low <= high
-      mid = low + (high - low) / 2
+      mid = low + ((high - low) / 2)
       # Ensure mid is at least 1, as k must be a positive integer.
       # If low and high were both 0, mid could be 0, but our low starts at 1.
       # This check is mostly for robustness.
@@ -39,7 +63,7 @@ class Contest175
       end
 
       # Calculate nonPositive(nums, mid)
-      ops = nums.sum { |num| (num - 1) / mid + 1 }
+      ops = nums.sum { |num| ((num - 1) / mid) + 1 }
 
       # Check the condition: nonPositive(nums, mid) <= mid * mid
       if ops <= mid * mid
@@ -51,5 +75,44 @@ class Contest175
     end
 
     ans
+  end
+
+  # Finds the length of the longest strictly increasing subsequence
+  # whose elements have a non-zero bitwise AND.
+  #
+  # @param {Integer[]} nums
+  # @return {Integer}
+  def longest_and_subsequence(nums)
+    max_len = 0
+    # 10^9 is less than 2^30, so we check bits from 0 to 29.
+    30.times do |b|
+      bit_mask = 1 << b
+      sub_nums = nums.select { |num| (num & bit_mask) != 0 }
+
+      next if sub_nums.empty?
+
+      lis_len = calculate_lis(sub_nums)
+      max_len = [max_len, lis_len].max
+    end
+    max_len
+  end
+
+  private
+
+  # Calculates the length of the Longest Increasing Subsequence
+  # using a standard O(n log n) algorithm.
+  def calculate_lis(arr)
+    tails = []
+    arr.each do |num|
+      if tails.empty? || num > tails.last
+        tails << num
+      else
+        # Find the first element in tails that is >= num
+        # and replace it. This is equivalent to `lower_bound`.
+        idx = tails.bsearch_index { |x| x >= num }
+        tails[idx] = num if idx
+      end
+    end
+    tails.length
   end
 end
