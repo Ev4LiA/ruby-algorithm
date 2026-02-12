@@ -28,4 +28,36 @@ class February2026
 
     true
   end
+
+  # 3713. Longest Balanced Substring I
+  # @param {String} s
+  # @return {Integer}
+  def longest_balanced(s)
+    max_length = 0
+    n = s.length
+
+    i = 0
+    while i < n
+      j = i
+      cnt = Array.new(26, 0)
+      while j < n
+        flag = true
+        c = s[j].ord - "a".ord
+        cnt[c] += 1
+
+        cnt.each do |x|
+          if x.positive? && x != cnt[c]
+            flag = false
+            break
+          end
+        end
+
+        max_length = [max_length, j - i + 1].max if flag
+        j += 1
+      end
+      i += 1
+    end
+
+    max_length
+  end
 end
