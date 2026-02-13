@@ -60,4 +60,80 @@ class February2026
 
     max_length
   end
+
+  # 3714. Longest Balanced Substring II
+  # @param {String} s
+  # @return {Integer}
+  def longest_balanced(s)
+    n = s.length
+
+    return n if n <= 1
+
+    single = 1
+    cur = 1
+    (1...n).each do |i|
+      if s[i] == s[i - 1]
+        cur += 1
+      else
+        single = [cur, single].max
+        cur = 1
+      end
+    end
+
+    single = [single, cur].max
+    res = single
+
+    ca = cb = cc = 0
+
+    seen = { [0, 0] => -1 }
+    (0...n).each do |i|
+      case s[i]
+      when "a"
+        ca += 1
+      when "b"
+        cb += 1
+      else
+        cc += 1
+      end
+
+      key = [ca - cb, ca - cc]
+      if seen.key?(key)
+        len = i - seen[key]
+        res = [res, len].max
+      else
+        seen[key] = i
+      end
+    end
+
+    pairs = [%w[a b c], %w[a c b], %w[b c a]]
+
+    pairs.each do |x, y, z|
+      diff = 0
+      last_other = -1
+      pos = { 0 => - 1 }
+
+      (0...n).each do |i|
+        ch = s[i]
+
+        if ch == z
+          diff = 0
+          last_other = i
+          pos = { 0 => i }
+          next
+        end
+
+        diff += 1 if ch == x
+        diff -= 1 if ch == y
+
+        if pos.key?(diff)
+          len = i - pos[diff]
+          res = [len, res].max
+        else
+          pos[diff] = i
+        end
+      end
+    end
+
+    res
+  end
 end
