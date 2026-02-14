@@ -136,4 +136,26 @@ class February2026
 
     res
   end
+
+  # 799. Champagne Tower
+  # @param {Integer} poured
+  # @param {Integer} query_row
+  # @param {Integer} query_glass
+  # @return {Float}
+  def champagne_tower(poured, query_row, query_glass)
+    tower = Array.new(102) { Array.new(102, 0.0) }
+    tower[0][0] = poured
+
+    (0..query_row).each do |r|
+      (0..r).each do |c|
+        q = (tower[r][c] - 1.0) / 2.0
+        if q.positive?
+          tower[r + 1][c] += q
+          tower[r + 1][c + 1] += q
+        end
+      end
+    end
+
+    [tower[query_row][query_glass], 1].min
+  end
 end
