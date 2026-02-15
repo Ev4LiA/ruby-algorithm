@@ -7,60 +7,6 @@ class February2026
     nums[0] + nums[1] + nums[2]
   end
 
-  # 3637. Tritonic Array I
-  # @param {Integer[]} nums
-  # @return {Boolean}
-  def is_trionic(nums)
-    p = 0
-    n = nums.length
-    p += 1 while p + 1 < n && nums[p] < nums[p + 1]
-    return false if p.zero? || p == n - 1
-
-    p += 1 while p + 1 < n && nums[p] > nums[p + 1]
-
-    return false if p >= n - 1
-
-    while p < n - 1
-      return false if nums[p + 1] <= nums[p]
-
-      p += 1
-    end
-
-    true
-  end
-
-  # 3713. Longest Balanced Substring I
-  # @param {String} s
-  # @return {Integer}
-  def longest_balanced(s)
-    max_length = 0
-    n = s.length
-
-    i = 0
-    while i < n
-      j = i
-      cnt = Array.new(26, 0)
-      while j < n
-        flag = true
-        c = s[j].ord - "a".ord
-        cnt[c] += 1
-
-        cnt.each do |x|
-          if x.positive? && x != cnt[c]
-            flag = false
-            break
-          end
-        end
-
-        max_length = [max_length, j - i + 1].max if flag
-        j += 1
-      end
-      i += 1
-    end
-
-    max_length
-  end
-
   # 3714. Longest Balanced Substring II
   # @param {String} s
   # @return {Integer}
@@ -158,4 +104,33 @@ class February2026
 
     [tower[query_row][query_glass], 1].min
   end
+
+  # 67. Add Binary 
+  # @param {String} a
+  # @param {String} b
+  # @return {String}
+  def add_binary(a, b)
+    n1 = a.length
+    n2 = b.length
+    max = [n1, n2].max
+    c = 0
+    i = 0
+
+    res = +""
+
+    while i < max || c > 0
+      a_bit = i < n1 ? a[n1 - 1 - i].ord - '0'.ord : 0
+      b_bit = i < n2 ? b[n2 - 1 - i].ord - '0'.ord : 0
+
+      s = (a_bit ^ b_bit) ^ c
+      c_out = ((a_bit ^ b_bit) & c) | (a_bit & b_bit)
+
+      res << (s + '0'.ord).chr
+      c = c_out
+      i += 1
+    end
+
+    res.reverse
+    end
 end
+
