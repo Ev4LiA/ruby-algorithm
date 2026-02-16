@@ -105,7 +105,7 @@ class February2026
     [tower[query_row][query_glass], 1].min
   end
 
-  # 67. Add Binary 
+  # 67. Add Binary
   # @param {String} a
   # @param {String} b
   # @return {String}
@@ -119,18 +119,30 @@ class February2026
     res = +""
 
     while i < max || c > 0
-      a_bit = i < n1 ? a[n1 - 1 - i].ord - '0'.ord : 0
-      b_bit = i < n2 ? b[n2 - 1 - i].ord - '0'.ord : 0
+      a_bit = i < n1 ? a[n1 - 1 - i].ord - "0".ord : 0
+      b_bit = i < n2 ? b[n2 - 1 - i].ord - "0".ord : 0
 
       s = (a_bit ^ b_bit) ^ c
       c_out = ((a_bit ^ b_bit) & c) | (a_bit & b_bit)
 
-      res << (s + '0'.ord).chr
+      res << (s + "0".ord).chr
       c = c_out
       i += 1
     end
 
     res.reverse
-    end
-end
+  end
 
+  # 190. Reverse Bits
+  # @param {Integer} n, a positive integer
+  # @return {Integer}
+  def reverse_bits(n)
+    result = 0
+    32.times do
+      result <<= 1
+      result |= (n & 1)
+      n >>= 1
+    end
+    result
+  end
+end
