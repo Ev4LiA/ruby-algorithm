@@ -145,4 +145,19 @@ class February2026
     end
     result
   end
+
+  # 401. Binary Watch
+  # @param {Integer} turned_on
+  # @return {String[]}
+  def read_binary_watch(turned_on)
+    res = []
+    12.times do |h|
+      60.times do |m|
+        if h.to_s(2).count("1") + m.to_s(2).count("1") == turned_on
+          res << "#{h}:#{m.to_s.rjust(2, "0")}"
+        end
+      end
+    end
+    res
+  end
 end
