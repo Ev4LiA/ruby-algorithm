@@ -153,11 +153,27 @@ class February2026
     res = []
     12.times do |h|
       60.times do |m|
-        if h.to_s(2).count("1") + m.to_s(2).count("1") == turned_on
-          res << "#{h}:#{m.to_s.rjust(2, "0")}"
-        end
+        res << "#{h}:#{m.to_s.rjust(2, '0')}" if h.to_s(2).count("1") + m.to_s(2).count("1") == turned_on
       end
     end
     res
+  end
+
+  # 693. Binary Number with Alternating Bits
+  # @param {Integer} n
+  # @return {Boolean}
+  def has_alternating_bits(n)
+    prev_bit = n & 1
+    n >>= 1
+
+    while n > 0
+      current_bit = n & 1
+      return false if current_bit == prev_bit
+
+      prev_bit = current_bit
+      n >>= 1
+    end
+
+    true
   end
 end
