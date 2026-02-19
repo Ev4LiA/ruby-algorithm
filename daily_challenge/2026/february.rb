@@ -176,4 +176,25 @@ class February2026
 
     true
   end
+
+  # 696. Count Binary Substrings
+  # @param {String} s
+  # @return {Integer}
+  def count_binary_substrings(s)
+    count = 0
+    prev_run_length = 0
+    cur_run_length = 1
+
+    (1...s.length).each do |i|
+      if s[i] == s[i - 1]
+        cur_run_length += 1
+      else
+        count += [prev_run_length, cur_run_length].min
+        prev_run_length = cur_run_length
+        cur_run_length = 1
+      end
+    end
+
+    count + [prev_run_length, cur_run_length].min
+  end
 end
