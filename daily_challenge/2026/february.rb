@@ -197,4 +197,25 @@ class February2026
 
     count + [prev_run_length, cur_run_length].min
   end
+
+  # 761. Special Binary String
+  # @param {String} s
+  # @return {String}
+  def make_largest_special(s)
+    return s if s.empty?
+
+    count = 0
+    start = 0
+    subs = []
+
+    s.chars.each_with_index do |ch, i|
+      count += (ch == "1" ? 1 : -1)
+      if count.zero?
+        subs << "1#{make_largest_special(s[start + 1...i])}0"
+        start = i + 1
+      end
+    end
+
+    subs.sort.reverse.join
+  end
 end
