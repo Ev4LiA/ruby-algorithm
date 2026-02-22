@@ -234,4 +234,23 @@ class February2026
 
     count
   end
+
+  # 868. Binary Gap
+  # @param {Integer} n
+  # @return {Integer}
+  def binary_gap(n)
+    last_position = nil
+    max_gap = 0
+
+    (0...32).each do |i|
+      if (n & (1 << i)) != 0
+        if last_position
+          max_gap = [max_gap, i - last_position].max
+        end
+        last_position = i
+      end
+    end
+
+    max_gap
+  end
 end
