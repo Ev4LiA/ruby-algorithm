@@ -253,4 +253,26 @@ class February2026
 
     max_gap
   end
+
+  # 1461. Check If a String Contains All Binary Codes of Size K
+  # @param {String} s
+  # @param {Integer} k
+  # @return {Boolean}
+  def has_all_codes(s, k)
+    needed = 1 << k
+    seen = Array.new(needed, false)
+    mask = needed - 1
+    hash = 0
+
+    s.chars.each_with_index do |ch, i|
+      hash = ((hash << 1) & mask) | (ch.ord - "0".ord)
+      if i >= k - 1 && !seen[hash]
+        seen[hash] = true
+        needed -= 1
+        return true if needed.zero?
+      end
+    end
+
+    needed.zero?
+  end
 end
