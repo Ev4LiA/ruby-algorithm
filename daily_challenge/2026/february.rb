@@ -275,4 +275,37 @@ class February2026
 
     needed.zero?
   end
+
+  # 1022. Sum of Root To Leaf Binary Numbers
+  # Definition for a binary tree node.
+  # class TreeNode
+  #     attr_accessor :val, :left, :right
+  #     def initialize(val = 0, left = nil, right = nil)
+  #         @val = val
+  #         @left = left
+  #         @right = right
+  #     end
+  # end
+
+  # @param {TreeNode} root
+  # @return {Integer}
+  def sum_root_to_leaf(root)
+    return 0 unless root
+
+    stack = [[root, root.val]]
+    total_sum = 0
+
+    until stack.empty?
+      node, current_value = stack.pop
+
+      if node.left.nil? && node.right.nil?
+        total_sum += current_value
+      end
+
+      stack << [node.right, (current_value << 1) | node.right.val] if node.right
+      stack << [node.left, (current_value << 1) | node.left.val] if node.left
+    end
+
+    total_sum
+  end
 end
