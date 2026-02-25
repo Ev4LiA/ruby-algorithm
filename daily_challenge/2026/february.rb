@@ -308,4 +308,11 @@ class February2026
 
     total_sum
   end
+
+  # 1356. Sort Integers by The Number of 1 Bits
+  # @param {Integer[]} arr
+  # @return {Integer[]}
+  def sort_by_bits(arr)
+    arr.sort_by { |x| [x.to_s(2).count("1"), x] }
+  end
 end
