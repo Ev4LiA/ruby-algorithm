@@ -242,13 +242,11 @@ class February2026
     last_position = nil
     max_gap = 0
 
-    (0...32).each do |i|
-      if (n & (1 << i)) != 0
-        if last_position
-          max_gap = [max_gap, i - last_position].max
-        end
-        last_position = i
-      end
+    32.times do |i|
+      next unless (n & (1 << i)) != 0
+
+      max_gap = [max_gap, i - last_position].max if last_position
+      last_position = i
     end
 
     max_gap
@@ -266,11 +264,11 @@ class February2026
 
     s.chars.each_with_index do |ch, i|
       hash = ((hash << 1) & mask) | (ch.ord - "0".ord)
-      if i >= k - 1 && !seen[hash]
-        seen[hash] = true
-        needed -= 1
-        return true if needed.zero?
-      end
+      next unless i >= k - 1 && !seen[hash]
+
+      seen[hash] = true
+      needed -= 1
+      return true if needed.zero?
     end
 
     needed.zero?
@@ -298,9 +296,7 @@ class February2026
     until stack.empty?
       node, current_value = stack.pop
 
-      if node.left.nil? && node.right.nil?
-        total_sum += current_value
-      end
+      total_sum += current_value if node.left.nil? && node.right.nil?
 
       stack << [node.right, (current_value << 1) | node.right.val] if node.right
       stack << [node.left, (current_value << 1) | node.left.val] if node.left
@@ -314,5 +310,25 @@ class February2026
   # @return {Integer[]}
   def sort_by_bits(arr)
     arr.sort_by { |x| [x.to_s(2).count("1"), x] }
+  end
+
+  # 1404. Number of Steps to Reduce a Number in Binary Representation to One
+  # @param {String} s
+  # @return {Integer}
+  def num_steps(s)
+    steps = 0
+    n = s.length
+
+    while n > 1
+      s = if s[-1] == "0"
+            s[0...-1]
+          else
+            (s.to_i(2) + 1).to_s(2)
+          end
+      steps += 1
+      n = s.length
+    end
+
+    steps
   end
 end
