@@ -331,4 +331,57 @@ class February2026
 
     steps
   end
+
+  # 3666. Minimum Operations to Equalize Binary Strings
+  # @param {String} s
+  # @param {Integer} k
+  # @return {Integer}
+  def min_operations(s, k)
+    count_0 = s.count("0")
+    zero = 0
+    len  = s.length
+
+    # count zeros using the same bit trick as Java (~char & 1)
+    (0...len).each do |i|
+      zero += (~s[i].ord) & 1
+    end
+
+    return 0 if zero == 0
+
+    if len == k
+      # ((zero == len ? 1 : 0) << 1) - 1
+      val = (zero == len ? 1 : 0)
+      return (val << 1) - 1
+    end
+
+    base = len - k
+
+    # odd = Math.max( ceil(zero / k), ceil((len - zero) / base) )
+    odd = [
+      (zero + k - 1) / k,
+      (len - zero + base - 1) / base
+    ].max
+
+    # make odd actually odd: odd += ~odd & 1
+    odd += (~odd) & 1
+
+    # even = Math.max( ceil(zero / k), ceil(zero / base) )
+    even = [
+      (zero + k - 1) / k,
+      (zero + base - 1) / base
+    ].max
+
+    # make even actually even: even += even & 1
+    even += even & 1
+
+    res = Float::INFINITY
+
+    # if ((k & 1) == (zero & 1)) res = Math.min(res, odd)
+    res = [res, odd].min if (k & 1) == (zero & 1)
+
+    # if ((~zero & 1) == 1) res = Math.min(res, even)
+    res = [res, even].min if ((~zero) & 1) == 1
+
+    res == Float::INFINITY ? -1 : res
+  end
 end
