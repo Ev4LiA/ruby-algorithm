@@ -384,4 +384,19 @@ class February2026
 
     res == Float::INFINITY ? -1 : res
   end
+
+  # 1680. Concatenation of Consecutive Binary Numbers
+  # @param {Integer} n
+  # @return {Integer}
+  def concatenated_binary(n)
+    mod = 10**9 + 7
+    result = 0
+
+    (1..n).each do |i|
+      length = i.to_s(2).length
+      result = ((result << length) | i) % mod
+    end
+
+    result
+  end
 end
