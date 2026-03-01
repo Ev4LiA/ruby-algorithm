@@ -399,4 +399,11 @@ class February2026
 
     result
   end
+
+  # 1689. Partitioning Into Minimum Number Of Deci-Binary Numbers
+  # @param {String} n
+  # @return {Integer}
+  def min_partitions(n)
+    n.chars.map(&:to_i).max
+  end
 end
