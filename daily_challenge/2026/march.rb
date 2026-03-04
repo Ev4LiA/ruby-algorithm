@@ -53,4 +53,35 @@ class March2026
       bit == "0" ? "1" : "0"
     end
   end
+
+  # 1582. Special Positions in a Binary Matrix
+  # @param {Integer[][]} mat
+  # @return {Integer}
+  def num_special(mat)
+    rows = mat.length
+    cols = mat[0].length
+    row_counts = Array.new(rows, 0)
+    col_counts = Array.new(cols, 0)
+
+    (0...rows).each do |i|
+      (0...cols).each do |j|
+        if mat[i][j] == 1
+          row_counts[i] += 1
+          col_counts[j] += 1
+        end
+      end
+    end
+
+    special_count = 0
+
+    (0...rows).each do |i|
+      (0...cols).each do |j|
+        if mat[i][j] == 1 && row_counts[i] == 1 && col_counts[j] == 1
+          special_count += 1
+        end
+      end
+    end
+
+    special_count
+  end
 end
