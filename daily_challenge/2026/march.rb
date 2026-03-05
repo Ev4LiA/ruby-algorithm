@@ -84,4 +84,24 @@ class March2026
 
     special_count
   end
+
+  # 1758. Minimum Changes To Make Alternating Binary String
+  # @param {String} s
+  # @return {Integer}
+  def min_operations(s)
+    count1 = 0
+    count2 = 0
+
+    s.chars.each_with_index do |char, index|
+      if char == "0"
+        count1 += 1 if index.even?
+        count2 += 1 if index.odd?
+      else
+        count1 += 1 if index.odd?
+        count2 += 1 if index.even?
+      end
+    end
+
+    [count1, count2].min
+  end
 end
