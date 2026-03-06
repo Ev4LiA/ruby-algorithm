@@ -104,4 +104,11 @@ class March2026
 
     [count1, count2].min
   end
+
+  # 1784. Check if Binary String Has at Most One Segment of Ones
+  # @param {String} s
+  # @return {Boolean}
+  def check_onces(s)
+    !s.include?("01")
+  end
 end
