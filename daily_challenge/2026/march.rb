@@ -76,9 +76,7 @@ class March2026
 
     (0...rows).each do |i|
       (0...cols).each do |j|
-        if mat[i][j] == 1 && row_counts[i] == 1 && col_counts[j] == 1
-          special_count += 1
-        end
+        special_count += 1 if mat[i][j] == 1 && row_counts[i] == 1 && col_counts[j] == 1
       end
     end
 
@@ -110,5 +108,38 @@ class March2026
   # @return {Boolean}
   def check_onces(s)
     !s.include?("01")
+  end
+
+  # 1888. Minimum Number of Flips to Make the Binary String Alternating
+  # @param {String} s
+  # @return {Integer}
+  def min_flips(s)
+    n = s.length
+    pre = Array.new(n) { [0, 0] }
+
+    (0...n).each do |i|
+      ch = s[i]
+      pre[i][0] = (i == 0 ? 0 : pre[i - 1][1]) + (ch == "1" ? 1 : 0)
+      pre[i][1] = (i == 0 ? 0 : pre[i - 1][0]) + (ch == "0" ? 1 : 0)
+    end
+
+    ans = [pre[n - 1][0], pre[n - 1][1]].min
+
+    if n.odd?
+      suf = Array.new(n) { [0, 0] }
+
+      (n - 1).downto(0) do |i|
+        ch = s[i]
+        suf[i][0] = (i == n - 1 ? 0 : suf[i + 1][1]) + (ch == "1" ? 1 : 0)
+        suf[i][1] = (i == n - 1 ? 0 : suf[i + 1][0]) + (ch == "0" ? 1 : 0)
+      end
+
+      (0...(n - 1)).each do |i|
+        ans = [ans, pre[i][0] + suf[i + 1][0]].min
+        ans = [ans, pre[i][1] + suf[i + 1][1]].min
+      end
+    end
+
+    ans
   end
 end
