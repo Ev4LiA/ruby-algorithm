@@ -142,4 +142,18 @@ class March2026
 
     ans
   end
+
+  # 1980. Find Unique Binary String
+  # @param {String[]} nums
+  # @return {String}
+  def find_different_binary_string(nums)
+    n = nums.length
+    result = ""
+
+    (0...n).each do |i|
+      result += nums[i][i] == "0" ? "1" : "0"
+    end
+
+    result
+  end
 end
