@@ -156,4 +156,25 @@ class March2026
 
     result
   end
+
+  # 3129. Find All Possible Stable Binary Arrays I
+  # params {Integer} zeros
+  # params {Integer} one
+  # params {Integer} limit
+  # return {Integer}
+  def count_stable_arrays(zero, one, limit)
+    mod = (10**9) + 7
+    dp = Array.new(zero + 1) { Array.new(one + 1) { [0, 0] } }
+    dp[0][0][0] = dp[0][0][1] = 1
+
+    (0..zero).each do |i|
+      (0..one).each do |j|
+        (1..limit).each do |k|
+          dp[i][j][1] = (dp[i][j][1] + (i - k >= 0 ? dp[i - k][j][0] : 0)) % mod
+          dp[i][j][0] = (dp[i][j][0] + (j - k >= 0 ? dp[i][j - k][1] : 0)) % mod
+        end
+      end
+    end
+    (dp[zero][one][0] + dp[zero][one][1]) % mod
+  end
 end
