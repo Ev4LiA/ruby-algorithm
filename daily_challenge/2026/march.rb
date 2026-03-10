@@ -177,4 +177,40 @@ class March2026
     end
     (dp[zero][one][0] + dp[zero][one][1]) % mod
   end
+
+  # 3130. Find All Possible Stable Binary Arrays II
+  # params {Integer} zeros
+  # params {Integer} one
+  # params {Integer} limit
+  # return {Integer}
+  def count_stable_arrays_ii(zero, one, limit)
+    mod = (10**9) + 7
+    memo = Array.new(zero + 1) { Array.new(one + 1) { [-1, -1] } }
+
+    define_method(:dp) do |zero, one, last_bit|
+      return 0 if zero < 0 || one < 0
+
+      if zero == 0
+        return last_bit == 0 || one > limit ? 0 : 1
+      elsif one == 0
+        return last_bit == 1 || zero > limit ? 0 : 1
+      end
+
+      if memo[zero][one][last_bit] == -1
+        res = 0
+        if last_bit == 0
+          res = (dp(zero - 1, one, 0) + dp(zero - 1, one, 1)) % mod
+          res = (res - dp(zero - limit - 1, one, 1) + mod) % mod if zero > limit
+        else
+          res = (dp(zero, one - 1, 0) + dp(zero, one - 1, 1)) % mod
+          res = (res - dp(zero, one - limit - 1, 0) + mod) % mod if one > limit
+        end
+        memo[zero][one][last_bit] = res % mod
+      end
+
+      memo[zero][one][last_bit]
+    end
+
+    (dp(zero, one, 0) + dp(zero, one, 1)) % mod
+  end
 end
