@@ -213,4 +213,20 @@ class March2026
 
     (dp(zero, one, 0) + dp(zero, one, 1)) % mod
   end
+
+  # 1009. Complement of Base 10 Integer
+  # @param {Integer} n
+  # @return {Integer}
+  def bitwise_complement(n)
+    return 1 if n == 0
+
+    mask = 1
+    while mask <= n
+      mask <<= 1
+      p mask
+    end
+
+    p (mask - 1)
+    (mask - 1) ^ n
+  end
 end
