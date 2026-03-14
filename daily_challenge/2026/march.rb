@@ -221,12 +221,36 @@ class March2026
     return 1 if n == 0
 
     mask = 1
-    while mask <= n
-      mask <<= 1
-      p mask
+    mask <<= 1 while mask <= n
+
+    (mask - 1) ^ n
+  end
+
+  # 1415. The k-th Lexicographical String of All Happy Strings of Length n
+  # @param {Integer} n
+  # @param {Integer} k
+  # @return {String}
+  def get_happy_string(n, k)
+    total_strings = 3 * (2**(n - 1))
+    return "" if k > total_strings
+
+    k -= 1 # 0-indexed
+    result = ""
+    prev_char = nil
+
+    n.times do |i|
+      m = 2**(n - 1 - i)
+      available_chars = %w[a b c]
+      available_chars.delete(prev_char) if prev_char
+
+      char_index = k / m
+      char = available_chars[char_index]
+      result += char
+
+      k %= m
+      prev_char = char
     end
 
-    p (mask - 1)
-    (mask - 1) ^ n
+    result
   end
 end
