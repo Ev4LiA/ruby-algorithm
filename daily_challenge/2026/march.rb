@@ -253,4 +253,57 @@ class March2026
 
     result
   end
+
+  # 1878. Get Biggest Three Rhombus Sums in a Grid
+  # @param {Integer[][]} grid
+  # @return {Integer[]}
+  def get_biggest_three(grid)
+    m = grid.length
+    n = grid[0].length
+    sum1 = Array.new(m + 1) { Array.new(n + 2, 0) }
+    sum2 = Array.new(m + 1) { Array.new(n + 2, 0) }
+
+    (1..m).each do |i|
+      (1..n).each do |j|
+        sum1[i][j] = sum1[i - 1][j - 1] + grid[i - 1][j - 1]
+        sum2[i][j] = sum2[i - 1][j + 1] + grid[i - 1][j - 1]
+      end
+    end
+
+    ans = Answer.new
+
+    (0...m).each do |i|
+      (0...n).each do |j|
+        # single cell is also a rhombus
+        ans.put(grid[i][j])
+
+        k = i + 2
+        while k < m
+          ux = i
+          uy = j
+          dx = k
+          dy = j
+          lx = (i + k) / 2
+          ly = j - ((k - i) / 2)
+          rx = (i + k) / 2
+          ry = j + ((k - i) / 2)
+
+          break if ly < 0 || ry >= n
+
+          sum =
+            (sum2[lx + 1][ly + 1] - sum2[ux][uy + 2]) +
+            (sum1[rx + 1][ry + 1] - sum1[ux][uy]) +
+            (sum1[dx + 1][dy + 1] - sum1[lx][ly]) +
+            (sum2[dx + 1][dy + 1] - sum2[rx][ry + 2]) -
+            (grid[ux][uy] + grid[dx][dy] + grid[lx][ly] + grid[rx][ry])
+
+          ans.put(sum)
+
+          k += 2
+        end
+      end
+    end
+
+    ans.get
+  end
 end
