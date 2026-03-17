@@ -306,4 +306,29 @@ class March2026
 
     ans.get
   end
+
+  # 1727. Largest Submatrix With Rearrangements
+  # @param {Integer[][]} matrix
+  # @return {Integer}
+  def largest_submatrix(matrix)
+    m = matrix.length
+    n = matrix[0].length
+    heights = Array.new(n, 0)
+    max_area = 0
+
+    (0...m).each do |i|
+      (0...n).each do |j|
+        heights[j] = matrix[i][j] == 1 ? heights[j] + 1 : 0
+      end
+
+      sorted_heights = heights.sort.reverse
+
+      (0...n).each do |j|
+        area = sorted_heights[j] * (j + 1)
+        max_area = [max_area, area].max
+      end
+    end
+
+    max_area
+  end
 end
