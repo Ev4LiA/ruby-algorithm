@@ -331,4 +331,27 @@ class March2026
 
     max_area
   end
+
+  # 3070. Count Submatrices with Top-Left Element and Sum Less Than k
+  # @param {Integer[][]} grid
+  # @param {Integer} k
+  # @return {Integer}
+  def count_submatrices(grid, k)
+    n = grid.length
+    m = grid[0].length
+
+    cols = Array.new(m, 0)
+    count = 0
+    (0...n).each do |i|
+      rows = 0
+      (0...m).each do |j|
+        cols[j] += grid[i][j]
+        rows += cols[j]
+
+        count += 1 if rows < k
+      end
+    end
+
+    count
+  end
 end
