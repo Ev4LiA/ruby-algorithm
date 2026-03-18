@@ -348,7 +348,7 @@ class March2026
         cols[j] += grid[i][j]
         rows += cols[j]
 
-        count += 1 if rows < k
+        count += 1 if rows <= k
       end
     end
 
