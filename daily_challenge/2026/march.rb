@@ -354,4 +354,30 @@ class March2026
 
     count
   end
+
+  # 2839. Check if Strings Can be Made Equal With Operations I
+  # @param {String} s1
+  # @param {String} s2
+  # @return {Boolean}
+  def can_be_equal(s1, s2)
+    s1_even_str = ""
+    s1_odd_str = ""
+    s2_even_str = ""
+    s2_odd_str = ""
+    s1.chars.each_with_index do |char, index|
+      if index.even?
+        s1_even_str += char
+      else
+        s1_odd_str += char
+      end
+    end
+    s2.chars.each_with_index do |char, index|
+      if index.even?
+        s2_even_str += char
+      else
+        s2_odd_str += char
+      end
+    end
+    s1_even_str.chars.sort == s2_even_str.chars.sort && s1_odd_str.chars.sort == s2_odd_str.chars.sort
+  end
 end
