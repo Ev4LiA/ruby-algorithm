@@ -380,4 +380,27 @@ class March2026
     end
     s1_even_str.chars.sort == s2_even_str.chars.sort && s1_odd_str.chars.sort == s2_odd_str.chars.sort
   end
+
+  # 2840. Check if Strings Can be Made Equal With Operations II
+  # @param {String} s1
+  # @param {String} s2
+  # @return {Boolean}
+  def can_be_equal_ii(s1, s2)
+    return false if s1.length != s2.length
+
+    count1 = Array.new(256, 0)
+    count2 = Array.new(256, 0)
+
+    s1.chars.each_with_index do |char, index|
+      offset = (index & 1) << 7
+      count1[offset + char.ord] += 1
+    end
+    
+    s2.chars.each_with_index do |char, index|
+      offset = (index & 1) << 7
+      count2[offset + char.ord] += 1
+    end
+
+    count1 == count2
+  end
 end
