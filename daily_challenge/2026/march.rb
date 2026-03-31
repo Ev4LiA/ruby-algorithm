@@ -403,4 +403,47 @@ class March2026
 
     count1 == count2
   end
+
+  # 3474. Lexicographically Smallest Generated String
+  # @param {String} str1
+  # @param {String} str2
+  # @return {String}
+  def generate_string(str1, str2)
+    n = str1.length
+    m = str2.length
+    s = Array.new(n + m - 1, 'a')
+    fixed = Array.new(n + m - 1, 0)      
+
+    (0...n).each do |i|
+      if str1[i] == 'T'
+        (i...(i + m)).each do |j|
+          if fixed[j] == 1 && s[j] != str2[j - i]
+            return ""
+          else
+            s[j] = str2[j - i]
+            fixed[j] = 1
+          end
+        end
+      end
+    end
+
+    (0...n).each do |i|
+      if str1[i] == 'F'
+        flag = false
+        idx = -1
+        (i + m - 1).downto(i) do |j|
+          flag = true if str2[j - i] != s[j]
+          idx = j if idx == -1 && fixed[j] == 0
+        end
+        if flag
+          next
+        elsif idx != -1
+          s[idx] = 'b'
+        else
+          return ""
+        end
+      end
+    end
+    s.join
+  end
 end
