@@ -48,4 +48,85 @@ class April2026
 
     max_d2
   end
+
+  # 3653. XOR After Range Multiplication Queries I
+  # @param {Integer} n
+  # @param {Integer[][]} queries
+  # @return {Integer[]}
+  def xor_after_queries(_n, queries)
+    mod = 1_000_000_007
+
+    n = nums.length
+    for q in queries
+      l = q[0]
+      r = q[1]
+      k = q[2]
+      v = q[3]
+      i = l
+      while i <= r
+        nums[i] = ((nums[i].to_i * v) % mod).to_i
+        i += k
+      end
+    end
+    res = 0
+    nums.each do |x|
+      res ^= x
+    end
+    res
+  end
+
+  # 3655. XOR After Range Multiplication Queries II
+  # @param {Integer} n
+  # @param {Integer[][]} queries
+  # @return {Integer[]}
+  def xor_after_queries_ii(n, queries)
+    mod = (10**9) + 7
+
+    mod_pow = lambda do |a, e, m|
+      res = 1
+      base = a % m
+      while e > 0
+        res = (res * base) % m if e.odd?
+        base = (base * base) % m
+        e >>= 1
+      end
+      res
+    end
+
+    n = nums.size
+    threshold = Math.sqrt(n).to_i
+    small = Hash.new { |h, k| h[k] = [] }
+
+    queries.each do |l, r, k, v|
+      if k <= threshold
+        small[k] << [l, r, v]
+      else
+        idx = l
+        while idx <= r
+          nums[idx] = (nums[idx] * v) % mod
+          idx += k
+        end
+      end
+    end
+
+    small.each do |k, list|
+      diff = Array.new(n + k + 1, 1)
+      list.each do |l, r, v|
+        diff[l] = (diff[l] * v) % mod
+        inv_v = mod_pow.call(v, mod - 2, mod)
+        last_included = r - ((r - l) % k)
+        pos = last_included + k
+        diff[pos] = (diff[pos] * inv_v) % mod if pos < diff.length
+      end
+
+      cur = Array.new(k, 1)
+      (0...n).each do |i|
+        r = i % k
+        cur[r] = (cur[r] * diff[i]) % mod
+        nums[i] = (nums[i] * cur[r]) % mod
+      end
+    end
+
+    nums.reduce(0) { |acc, num| acc ^ num }
+  end
 end
