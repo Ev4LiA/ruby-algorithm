@@ -150,4 +150,26 @@ class April2026
     end
     res == Float::INFINITY ? -1 : res
   end
+
+
+  # 3741. Minimum Distance Between Three Equal Elements II
+  # @param {Integer[]} nums
+  # @return {Integer}
+  def minimum_distance_ii(nums)
+    hash = Hash.new { |h, k| h[k] = [] }
+    nums.each_with_index do |num, i|
+      hash[num] << i
+    end
+
+    res = Float::INFINITY
+    hash.each_value do |indices|
+      next if indices.size < 3
+
+      (0..(indices.size - 3)).each do |i|
+        d = indices[i + 2] - indices[i] + indices[i + 1] - indices[i] + indices[i + 2] - indices[i + 1]
+        res = d if d < res
+      end
+    end
+    res == Float::INFINITY ? -1 : res
+  end
 end
