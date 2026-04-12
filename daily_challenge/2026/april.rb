@@ -151,7 +151,6 @@ class April2026
     res == Float::INFINITY ? -1 : res
   end
 
-
   # 3741. Minimum Distance Between Three Equal Elements II
   # @param {Integer[]} nums
   # @return {Integer}
@@ -171,5 +170,53 @@ class April2026
       end
     end
     res == Float::INFINITY ? -1 : res
+  end
+
+  # 1320. Minimum Distance to Type a Word Using Two Fingers
+  # @param {String} word
+  # @return {Integer}
+  def minimum_distance(word)
+    get_distance = lambda do |p, q|
+      x1 = p / 6
+      y1 = p % 6
+      x2 = q / 6
+      y2 = q % 6
+      (x1 - x2).abs + (y1 - y2).abs
+    end
+
+    n = word.length
+    dp = Array.new(n) { Array.new(26) { Array.new(26, Float::INFINITY) } }
+
+    26.times do |i|
+      dp[0][i][word[0].ord - "A".ord] = 0
+      dp[0][word[0].ord - "A".ord][i] = 0
+    end
+
+    (1...n).each do |i|
+      cur = word[i].ord - "A".ord
+      prev = word[i - 1].ord - "A".ord
+      d = get_distance.call(prev, cur)
+
+      26.times do |j|
+        dp[i][cur][j] = [dp[i][cur][j], dp[i - 1][prev][j] + d].min
+        dp[i][j][cur] = [dp[i][j][cur], dp[i - 1][j][prev] + d].min
+
+        next unless prev == j
+
+        26.times do |k|
+          d0 = get_distance.call(k, cur)
+          dp[i][cur][j] = [dp[i][cur][j], dp[i - 1][k][j] + d0].min
+          dp[i][j][cur] = [dp[i][j][cur], dp[i - 1][j][k] + d0].min
+        end
+      end
+    end
+
+    ans = Float::INFINITY
+    26.times do |j|
+      26.times do |k|
+        ans = [ans, dp[n - 1][j][k]].min
+      end
+    end
+    ans.to_i
   end
 end
