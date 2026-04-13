@@ -219,4 +219,19 @@ class April2026
     end
     ans.to_i
   end
+
+  # 1848. Minimum Distance to the Target Element
+  # @param {Integer[]} nums
+  # @param {Integer} target
+  # @param {Integer} start
+  # @return {Integer}
+  def get_min_distance(nums, target, start)
+    n = nums.length
+    res = n
+    (0...n).each do |i|
+      res = [res, (i - start).abs].min if nums[i] === target
+    end
+
+    res
+  end
 end
