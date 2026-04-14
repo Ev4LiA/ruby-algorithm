@@ -234,4 +234,30 @@ class April2026
 
     res
   end
+
+  # 2463. Minimum Total Distance Traveled
+  # @param {Integer[]} robot
+  # @param {Integer[][]} factory
+  # @return {Integer}
+  def minimum_total_distance(robot, factory)
+    robot.sort!
+    factory.sort_by! { |f| f[0] }
+
+    factory_positions = []
+    factory.each do |f|
+      f[1].times { factory_positions << f[0] }
+    end
+
+    calculate_min_distance = lambda do |robot_idx, factory_idx|
+      return 0 if robot_idx == robot.size
+      return 1e12 if factory_idx == factory_positions.size
+
+      assign = (robot[robot_idx] - factory_positions[factory_idx]).abs + calculate_min_distance.call(robot_idx + 1, factory_idx + 1)
+      skip = calculate_min_distance.call(robot_idx, factory_idx + 1)
+
+      [assign, skip].min
+    end
+
+    calculate_min_distance.call(0, 0)
+  end
 end
