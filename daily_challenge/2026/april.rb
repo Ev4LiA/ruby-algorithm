@@ -239,25 +239,38 @@ class April2026
   # @param {Integer[]} robot
   # @param {Integer[][]} factory
   # @return {Integer}
-  def minimum_total_distance(robot, factory)
-    robot.sort!
-    factory.sort_by! { |f| f[0] }
+  def minimum_total_distance(robots, factories)
+    robots.sort!
+    factories.sort_by! { |f| f[0] }
 
     factory_positions = []
-    factory.each do |f|
-      f[1].times { factory_positions << f[0] }
+    factories.each do |factory|
+      pos, cap = factory
+      cap.times { factory_positions << pos }
     end
 
-    calculate_min_distance = lambda do |robot_idx, factory_idx|
-      return 0 if robot_idx == robot.size
-      return 1e12 if factory_idx == factory_positions.size
+    robot_count = robots.size
+    factory_count = factory_positions.size
 
-      assign = (robot[robot_idx] - factory_positions[factory_idx]).abs + calculate_min_distance.call(robot_idx + 1, factory_idx + 1)
-      skip = calculate_min_distance.call(robot_idx, factory_idx + 1)
+    next_dp = Array.new(factory_count + 1, 0)
+    current = Array.new(factory_count + 1, 0)
 
-      [assign, skip].min
+    current[factory_count] = 1_000_000_000_000
+
+    (robot_count - 1).downto(0) do |i|
+      current[factory_count] = 1_000_000_000_000
+
+      (factory_count - 1).downto(0) do |j|
+        assign = (robots[i] - factory_positions[j]).abs + next_dp[j + 1]
+        skip = current[j + 1]
+        current[j] = [assign, skip].min
+      end
+
+      (0..factory_count).each do |k|
+        next_dp[k] = current[k]
+      end
     end
 
-    calculate_min_distance.call(0, 0)
+    current[0]
   end
 end
