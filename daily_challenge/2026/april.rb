@@ -273,4 +273,23 @@ class April2026
 
     current[0]
   end
+
+  # 2515. Shortest Distance to Target String in a Circular Array
+  # @param {String[]} words
+  # @param {String} target
+  # @param {Integer} start_index
+  # @return {Integer}
+  def closest_target(words, target, start_index)
+    ans = words.length
+    n = words.length
+
+    words.each_with_index do |word, i|
+      if word == target
+        d = (i - start_index).abs
+        ans = [ans, d, n - d].min
+      end
+    end
+
+    ans < n ? ans : -1
+  end
 end
