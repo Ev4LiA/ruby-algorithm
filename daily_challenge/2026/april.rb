@@ -292,4 +292,36 @@ class April2026
 
     ans < n ? ans : -1
   end
+
+  # 3488. Closest Equal Element Queries
+  # @param {Integer[]} nums
+  # @param {Integer[]} queries
+  # @return {Integer[]}
+  def solve_queries(nums, queries)
+    n = nums.length
+    left = Array.new(n, 0)
+    right = Array.new(n, 0)
+
+    pos = {}
+    (-n...n).each do |i|
+      left[i] = pos.fetch(nums[i], i - n) if i >= 0
+      pos[nums[((i % n) + n) % n]] = i
+    end
+
+    pos.clear
+    ((2 * n) - 1).downto(0) do |i|
+      right[i] = pos.fetch(nums[i], i + n) if i < n
+      pos[nums[i % n]] = i
+    end
+
+    result = []
+    queries.each do |x|
+      result << if x - left[x] == n
+                  -1
+                else
+                  [x - left[x], right[x] - x].min
+                end
+    end
+    result
+  end
 end
