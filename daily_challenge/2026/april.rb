@@ -324,4 +324,12 @@ class April2026
     end
     result
   end
+
+  # 3783. Mirror Distance of an Integer
+  # @param {Integer} n
+  # @return {Integer}
+  def mirror_distance(n)
+    reverse = n.to_s.reverse.to_i
+    (n - reverse).abs
+  end
 end

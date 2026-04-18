@@ -9,4 +9,5 @@ gem "rubocop-packaging"
 gem "rubocop-performance", "~> 1.19.1"
 gem "rubocop-rspec"
 gem "rubocop-shopify"
-gem "ruby-lsp", "~> 0.13.2" # Use an older version known to work with RuboCop 1.57
+gem "ruby-lsp", "~> 0.26.9" # or latest
+gem "sorbet-runtime"

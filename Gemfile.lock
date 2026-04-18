@@ -14,6 +14,7 @@ GEM
       reline (>= 0.4.2)
     json (2.13.0)
     language_server-protocol (3.17.0.5)
+    logger (1.7.0)
     parallel (1.27.0)
     parser (3.2.2.4)
       ast (~> 2.4.1)
@@ -21,12 +22,16 @@ GEM
     pp (0.6.3)
       prettyprint
     prettyprint (0.2.0)
-    prism (0.19.0)
+    prism (1.9.0)
     psych (5.2.6)
       date
       stringio
     racc (1.8.1)
     rainbow (3.1.1)
+    rbs (4.0.2)
+      logger
+      prism (>= 1.6.0)
+      tsort
     rdoc (6.15.0)
       erb
       psych (>= 4.0.0)
@@ -57,10 +62,10 @@ GEM
       rubocop (~> 1.40)
     rubocop-shopify (2.15.1)
       rubocop (~> 1.51)
-    ruby-lsp (0.13.4)
+    ruby-lsp (0.26.9)
       language_server-protocol (~> 3.17.0)
-      prism (>= 0.19.0, < 0.20)
-      sorbet-runtime (>= 0.5.10782)
+      prism (>= 1.2, < 2.0)
+      rbs (>= 3, < 5)
     ruby-progressbar (1.13.0)
     sorbet-runtime (0.5.12356)
     stringio (3.1.7)
@@ -79,7 +84,8 @@ DEPENDENCIES
   rubocop-performance (~> 1.19.1)
   rubocop-rspec
   rubocop-shopify
-  ruby-lsp (~> 0.13.2)
+  ruby-lsp (~> 0.26.9)
+  sorbet-runtime
 
 RUBY VERSION
    ruby 3.3.0p0
