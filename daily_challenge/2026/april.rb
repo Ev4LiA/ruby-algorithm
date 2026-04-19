@@ -332,4 +332,23 @@ class April2026
     reverse = n.to_s.reverse.to_i
     (n - reverse).abs
   end
+
+  # 1855. Maximum Distance Between a Pair of Values
+  # @param {Integer[]} nums1
+  # @param {Integer[]} nums2
+  # @return {Integer}
+  def max_distance(nums1, nums2)
+    i = 0
+    j = 0
+    max_dist = 0
+    while i < nums1.length && j < nums2.length
+      if nums1[i] <= nums2[j]
+        max_dist = [max_dist, j - i].max
+        j += 1
+      else
+        i += 1
+      end
+    end
+    max_dist
+  end
 end
