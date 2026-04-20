@@ -351,4 +351,28 @@ class April2026
     end
     max_dist
   end
+
+  #  2078. Two Furthest Houses With Different Colors
+  # @param {Integer[]} colors
+  # @return {Integer}
+  def max_distance2(colors)
+    left = 0
+    right = 0
+    n = colors.length
+    (0...n).each do |i|
+      if colors[i] != colors[n - 1]
+        left = i
+        break
+      end
+    end
+
+    (n - 1).downto(0) do |i|
+      if colors[i] != colors[0]
+        right = i
+        break
+      end
+    end
+
+    [right, n - 1 - left].max
+  end
 end
