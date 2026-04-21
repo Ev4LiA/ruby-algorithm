@@ -375,4 +375,56 @@ class April2026
 
     [right, n - 1 - left].max
   end
+
+  # 1722. Minimize Hamming Distance After Swap Operations
+  # @param {Integer[]} source
+  # @param {Integer[]} target
+  # @param {Integer[][]} allowed_swaps
+  # @return {Integer}
+  def minimum_hamming_distance(source, target, allowed_swaps)
+    n = source.length
+    graph = Array.new(n) { [] }
+    allowed_swaps.each do |swap|
+      graph[swap[0]] << swap[1]
+      graph[swap[1]] << swap[0]
+    end
+
+    visited = Array.new(n, false)
+    res = 0
+
+    (0...n).each do |i|
+      next if visited[i]
+
+      queue = [i]
+      visited[i] = true
+      indices = []
+
+      while !queue.empty?
+        node = queue.shift
+        indices << node
+        graph[node].each do |neighbor|
+          unless visited[neighbor]
+            visited[neighbor] = true
+            queue << neighbor
+          end
+        end
+      end
+
+      count_source = Hash.new(0)
+      count_target = Hash.new(0)
+
+      indices.each do |index|
+        count_source[source[index]] += 1
+        count_target[target[index]] += 1
+      end
+
+      count_source.each do |key, value|
+        if count_target[key] > 0
+          res += [value, count_target[key]].min
+        end
+      end
+    end
+
+    n - res
+  end
 end
