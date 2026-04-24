@@ -427,4 +427,22 @@ class April2026
 
     n - res
   end
+
+  # 2833. Furthest Point From Origin
+  # @param {Integer[]} moves
+  # @return {Integer}
+  def furthest_distance_from_origin(moves)
+    left = 0
+    right = 0
+    moves.each_char do |move|
+      case move
+      when "L"
+        left += 1
+      when "R"
+        right += 1
+      end
+    end
+    min = [left, right].min
+    moves.length - (2 * min)
+  end
 end
