@@ -14,4 +14,21 @@ class May2026
     end
     max_f
   end
+
+  # 788. Rotated Digits
+  # @param {Integer} n
+  # @return {Integer}
+  def rotated_digits(n)
+    count = 0
+    (1..n).each do |i|
+      s = i.to_s
+      if s.include?('3') || s.include?('4') || s.include?('7')
+        next
+      end
+      if s.include?('2') || s.include?('5') || s.include?('6') || s.include?('9')
+        count += 1
+      end
+    end
+    count
+  end
 end
