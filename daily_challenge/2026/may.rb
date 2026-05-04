@@ -38,4 +38,21 @@ class May2026
 
     (s + s).include?(goal)
   end
+
+  # 48. Rotate Image
+  # @param {Integer[][]} matrix
+  # @return {Void} Do not return anything, modify matrix in-place instead.
+  def rotate(matrix)
+    n = matrix.length
+    (0...n).each do |i|
+      (i...n).each do |j|
+        matrix[i][j], matrix[j][i] = matrix[j][i], matrix[i][j]
+      end
+    end
+    (0...n).each do |i|
+      (0...n / 2).each do |j|
+        matrix[i][j], matrix[i][n - 1 - j] = matrix[i][n - 1 - j], matrix[i][j]
+      end
+    end
+  end
 end
