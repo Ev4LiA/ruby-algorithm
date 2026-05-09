@@ -55,4 +55,48 @@ class May2026
       end
     end
   end
+
+  # 1914. Cyclically Rotating a Grid
+  # @param {Integer[][]} grid
+  # @param {Integer} k
+  # @return {Integer[][]}
+  def rotate_grid(grid, k)
+    m = grid.length
+    n = grid[0].length
+    nlayer = [m, n].min / 2 # level count
+    # enumerate each layer counterclockwise starting from the top-left corner
+    (0...nlayer).each do |layer|
+      r = []
+      c = []
+      val = [] # each element's row index, column index, and value
+      (layer...m - layer - 1).each do |i| # left
+        r << i
+        c << layer
+        val << grid[i][layer]
+      end
+      (layer...n - layer - 1).each do |j| # down
+        r << (m - layer - 1)
+        c << j
+        val << grid[m - layer - 1][j]
+      end
+      (m - layer - 1).downto(layer + 1) do |i| # right
+        r << i
+        c << (n - layer - 1)
+        val << grid[i][n - layer - 1]
+      end
+      (n - layer - 1).downto(layer + 1) do |j| # up
+        r << layer
+        c << j
+        val << grid[layer][j]
+      end
+      total = val.size # total number of elements in each layer
+      kk = k % total # equivalent number of rotations
+      # find the value at each index after rotation
+      (0...total).each do |i|
+        idx = (i + total - kk) % total # the index corresponding to the value after rotation
+        grid[r[i]][c[i]] = val[idx]
+      end
+    end
+    grid
+  end
 end
