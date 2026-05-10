@@ -99,4 +99,26 @@ class May2026
     end
     grid
   end
+
+  # 2770. Maximum Number of Jumps to Reach the Last Index
+  # @param {Integer[]} nums
+  # @param {Integer} target
+  # @return {Integer}
+  def maximum_jumps(nums, target)
+    n = nums.length
+    # dp[i] = max jumps to reach i (or -1 if unreachable)
+    dp = Array.new(n, -1)
+    dp[0] = 0
+
+    (1...n).each do |j|
+      (0...j).each do |i|
+        next if dp[i] == -1
+
+        diff = nums[j] - nums[i]
+        dp[j] = [dp[j], dp[i] + 1].max if -target <= diff && diff <= target
+      end
+    end
+
+    dp[n - 1]
+  end
 end
