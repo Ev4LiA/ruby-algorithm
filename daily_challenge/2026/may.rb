@@ -121,4 +121,33 @@ class May2026
 
     dp[n - 1]
   end
+
+  # 1306. Jump Game III
+  # @param {Integer[]} arr
+  # @param {Integer} start
+  # @return {Boolean}
+  def can_reach(arr, start)
+    n = arr.length
+    visited = Array.new(n, false)
+    queue = [start]
+    visited[start] = true
+
+    until queue.empty?
+      i = queue.shift
+
+      # If we reach a value 0, we're done
+      return true if arr[i] == 0
+
+      # Next positions we can jump to
+      [i + arr[i], i - arr[i]].each do |next_i|
+        # Stay in bounds and avoid revisiting
+        if next_i >= 0 && next_i < n && !visited[next_i]
+          visited[next_i] = true
+          queue << next_i
+        end
+      end
+    end
+
+    false
+  end
 end
