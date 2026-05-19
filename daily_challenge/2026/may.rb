@@ -150,4 +150,16 @@ class May2026
 
     false
   end
+
+  # 2540. Minimum Common Value
+  # @param {Integer[]} nums1
+  # @param {Integer[]} nums2
+  # @return {Integer}
+  def get_common(nums1, nums2)
+    nums1_set = nums1.to_set
+    nums2.each do |num|
+      return num if nums1_set.include?(num)
+    end
+    -1
+  end
 end
