@@ -162,4 +162,18 @@ class May2026
     end
     -1
   end
+
+  # 1752. Check if Array Is Sorted and Rotated
+  # @param {Integer[]} nums
+  # @return {Boolean}
+  def check(nums)
+    n = nums.length
+    count = 0
+    (0...n).each do |i|
+      if nums[i] > nums[(i + 1) % n]
+        count += 1
+        return false if count > 1
+      end
+    end
+    true
 end

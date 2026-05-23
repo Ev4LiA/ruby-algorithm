@@ -71,3 +71,4 @@ build/
 out/
 .cursor/
 .specify/
+.claude/auto-context.md
