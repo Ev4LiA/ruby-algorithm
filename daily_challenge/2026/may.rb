@@ -48,8 +48,6 @@ class May2026
       (i...n).each do |j|
         matrix[i][j], matrix[j][i] = matrix[j][i], matrix[i][j]
       end
-    end
-    (0...n).each do |i|
       (0...n / 2).each do |j|
         matrix[i][j], matrix[i][n - 1 - j] = matrix[i][n - 1 - j], matrix[i][j]
       end
@@ -136,7 +134,7 @@ class May2026
       i = queue.shift
 
       # If we reach a value 0, we're done
-      return true if arr[i] == 0
+      return true if (arr[i]).zero?
 
       # Next positions we can jump to
       [i + arr[i], i - arr[i]].each do |next_i|
@@ -176,4 +174,48 @@ class May2026
       end
     end
     true
+  end
+
+  # 1340. Jump Game V
+  # @param {Integer[]} arr
+  # @param {Integer} d
+  # @return {Integer}
+  def max_jumps(arr, d)
+    n = arr.length
+    memo = Array.new(n, nil)
+
+    dfs = lambda do |i|
+      return memo[i] if memo[i]
+
+      best = 1 # at least this index itself
+
+      # explore left
+      step = 1
+      while step <= d && i - step >= 0
+        j = i - step
+        break if arr[j] >= arr[i] # must be strictly smaller, and can't jump "over" >=
+
+        best = [best, 1 + dfs.call(j)].max
+        step += 1
+      end
+
+      # explore right
+      step = 1
+      while step <= d && i + step < n
+        j = i + step
+        break if arr[j] >= arr[i]
+
+        best = [best, 1 + dfs.call(j)].max
+        step += 1
+      end
+
+      memo[i] = best
+    end
+
+    ans = 1
+    (0...n).each do |i|
+      ans = [ans, dfs.call(i)].max
+    end
+    ans
+  end
 end
