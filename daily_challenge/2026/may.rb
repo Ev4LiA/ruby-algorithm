@@ -218,4 +218,38 @@ class May2026
     end
     ans
   end
+
+  # 1871. Jump Game VII
+  # @param {String} s
+  # @param {Integer} min_jump
+  # @param {Integer} max_jump
+  # @return {Boolean}
+  def can_reach(s, min_jump, max_jump)
+    n = s.length
+    return false if s[0] != "0" || s[n - 1] != "0"
+
+    # dp[i] = true if index i is reachable
+    dp = Array.new(n, false)
+    dp[0] = true
+
+    # prefix = number of reachable indices in the current window
+    prefix = 0
+
+    (1...n).each do |i|
+      # when the window starts including i - min_jump
+      start_idx = i - min_jump
+      prefix += 1 if start_idx >= 0 && dp[start_idx]
+
+      # when the window stops including i - max_jump - 1
+      end_exclusive_idx = i - max_jump - 1
+      prefix -= 1 if end_exclusive_idx >= 0 && dp[end_exclusive_idx]
+
+      # i is reachable if:
+      # 1) s[i] is '0'
+      # 2) there is at least one reachable index in [i - max_jump, i - min_jump]
+      dp[i] = (s[i] == "0" && prefix.positive?)
+    end
+
+    dp[n - 1]
+  end
 end
