@@ -252,4 +252,29 @@ class May2026
 
     dp[n - 1]
   end
+
+  # 3120. Count the Number of Special Characters I
+  # @param {String} word
+  # @return {Integer}
+  def number_of_special_chars(word)
+    lowers = Set.new
+    uppers = Set.new
+
+    word.each_char do |ch|
+      if ch >= "a" && ch <= "z"
+        lowers << ch
+      else
+        # only other valid chars by constraint are 'A'..'Z'
+        uppers << ch
+      end
+    end
+
+    # Count letters that appear in both lowercase and uppercase
+    count = 0
+    ("a".."z").each do |c|
+      count += 1 if lowers.include?(c) && uppers.include?(c.upcase)
+    end
+
+    count
+  end
 end
