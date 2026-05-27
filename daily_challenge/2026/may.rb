@@ -277,4 +277,35 @@ class May2026
 
     count
   end
+
+  # 3121. Count the Number of Special Characters II
+  # @param {String} word
+  # @return {Integer}
+  def number_of_special_chars(word)
+    # For each letter 'a'..'z' (0..25):
+    # lower[i] = last index of lowercase (i.e., 'a' + i), or -1 if never seen
+    # upper[i] = first index of uppercase (i.e., 'A' + i), or -1 if never seen
+    lower = Array.new(26, -1)
+    upper = Array.new(26, -1)
+
+    word.chars.each_with_index do |ch, i|
+      if ch >= "a" && ch <= "z"
+        idx = ch.ord - "a".ord
+        lower[idx] = i # track *last* lowercase occurrence
+      else
+        idx = ch.ord - "A".ord
+        upper[idx] = i if upper[idx] == -1 # track *first* uppercase occurrence
+      end
+    end
+
+    # A letter c is special if:
+    # - it appears in both lowercase and uppercase
+    # - last lowercase index < first uppercase index
+    count = 0
+    26.times do |i|
+      count += 1 if lower[i] != -1 && upper[i] != -1 && lower[i] < upper[i]
+    end
+
+    count
+  end
 end
