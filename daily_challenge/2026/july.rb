@@ -46,4 +46,80 @@ class July2026
 
     res
   end
+
+  # 3635. Earliest Finish Time for Land and Water Rides II
+  # @param {Integer[]} land_start_time
+  # @param {Integer[]} land_duration
+  # @param {Integer[]} water_start_time
+  # @param {Integer[]} water_duration
+  # @return {Integer}
+  def earliest_finish_time(land_start_time, land_duration, water_start_time, water_duration)
+    ans1 = best_order(land_start_time, land_duration, water_start_time, water_duration)
+    ans2 = best_order(water_start_time, water_duration, land_start_time, land_duration)
+    [ans1, ans2].min
+  end
+
+  # first_* : list we do first
+  # second_* : list we do second
+  def best_order(first_start, first_dur, second_start, second_dur)
+    n2 = second_start.length
+
+    # sort second rides by start time
+    rides2 = (0...n2).map { |i| [second_start[i], second_dur[i]] }
+    rides2.sort_by! { |s, _d| s }
+
+    s2 = Array.new(n2)
+    d2 = Array.new(n2)
+    n2.times do |i|
+      s2[i], d2[i] = rides2[i]
+    end
+
+    # prefix minimum of duration
+    pref_min_d = Array.new(n2)
+    cur = Float::INFINITY
+    n2.times do |i|
+      cur = [cur, d2[i]].min
+      pref_min_d[i] = cur
+    end
+
+    # suffix minimum of (start + duration)
+    suff_min_finish = Array.new(n2 + 1, Float::INFINITY)
+    (n2 - 1).downto(0) do |i|
+      finish = s2[i] + d2[i]
+      suff_min_finish[i] = [finish, suff_min_finish[i + 1]].min
+    end
+
+    ans = Float::INFINITY
+
+    first_start.length.times do |i|
+      finish1 = first_start[i] + first_dur[i]
+
+      # upper_bound on s2: first index with start > finish1
+      idx = upper_bound(s2, finish1)
+
+      cand = Float::INFINITY
+      # case 1: start second ride immediately if it already opened
+      cand = [cand, finish1 + pref_min_d[idx - 1]].min if idx > 0
+      # case 2: wait for some later-opening second ride
+      cand = [cand, suff_min_finish[idx]].min if idx < n2
+
+      ans = [ans, cand].min
+    end
+
+    ans
+  end
+
+  def upper_bound(arr, target)
+    lo = 0
+    hi = arr.length
+    while lo < hi
+      mid = (lo + hi) / 2
+      if arr[mid] <= target
+        lo = mid + 1
+      else
+        hi = mid
+      end
+    end
+    lo
+  end
 end
