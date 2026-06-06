@@ -122,4 +122,27 @@ class July2026
     end
     lo
   end
+
+  # 2574. Left and Right Sum Differences
+  # @param {Integer[]} nums
+  # @return {Integer[]}
+  def left_right_difference(nums)
+    n = nums.length
+    ans = []
+
+    left_sum = 0
+    nums.each_with_index do |num, i|
+      ans[i] = left_sum
+      left_sum += num
+    end
+
+    right_sum = 0
+
+    (0...n).reverse_each do |i|
+      ans[i] = (ans[i] - right_sum).abs
+      right_sum += nums[i]
+    end
+
+    ans
+  end
 end
