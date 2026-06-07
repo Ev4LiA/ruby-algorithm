@@ -1,4 +1,4 @@
-class July2026
+class June2026
   # 2144. Minimum Cost of Buying Candies With Discount
   # @param {Integer[]} cost
   # @return {Integer}
@@ -144,5 +144,49 @@ class July2026
     end
 
     ans
+  end
+
+  # 2196. Create Binary Tree From Descriptions
+  # Definition for a binary tree node.
+  # class TreeNode
+  #   attr_accessor :val, :left, :right
+  #   def initialize(val = 0, left = nil, right = nil)
+  #     @val = val
+  #     @left = left
+  #     @right = right
+  #   end
+  # end
+
+  # @param {Integer[][]} descriptions
+  # @return {TreeNode}
+  def create_binary_tree(descriptions)
+    # Map value -> TreeNode
+    nodes = {}
+    # Set of all values that appear as children
+    children = {}
+
+    descriptions.each do |parent_val, child_val, is_left|
+      parent = (nodes[parent_val] ||= TreeNode.new(parent_val))
+      child  = (nodes[child_val]  ||= TreeNode.new(child_val))
+
+      if is_left == 1
+        parent.left = child
+      else
+        parent.right = child
+      end
+
+      children[child_val] = true
+    end
+
+    # Root is the node that never appears as a child
+    root_val = nil
+    descriptions.each do |parent_val, _child_val, _is_left|
+      unless children[parent_val]
+        root_val = parent_val
+        break
+      end
+    end
+
+    nodes[root_val]
   end
 end
