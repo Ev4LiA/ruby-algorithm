@@ -189,4 +189,49 @@ class June2026
 
     nodes[root_val]
   end
+
+  # 2130. Maximum Twin Sum of a Linked List
+  # Definition for singly-linked list.
+  # class ListNode
+  #   attr_accessor :val, :next
+  #   def initialize(val = 0, _next = nil)
+  #     @val = val
+  #     @next = _next
+  #   end
+  # end
+
+  # @param {ListNode} head
+  # @return {Integer}
+  def pair_sum(head)
+    # 1. Find middle using fast / slow  
+    slow = head
+    fast = head
+    while fast && fast.next
+      slow = slow.next
+      fast = fast.next.next
+    end
+
+    # 2. Reverse second half starting from slow
+    prev = nil
+    curr = slow
+    while curr
+      nxt = curr.next
+      curr.next = prev
+      prev = curr
+      curr = nxt
+    end
+    second = prev
+
+    # 3. Walk both halves, compute twin sums, track max
+    max_sum = 0
+    first = head
+    while second
+      sum = first.val + second.val
+      max_sum = sum if sum > max_sum
+      first = first.next
+      second = second.next
+    end
+
+    max_sum
+  end
 end
