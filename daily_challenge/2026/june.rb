@@ -203,7 +203,7 @@ class June2026
   # @param {ListNode} head
   # @return {Integer}
   def pair_sum(head)
-    # 1. Find middle using fast / slow  
+    # 1. Find middle using fast / slow
     slow = head
     fast = head
     while fast && fast.next
@@ -233,5 +233,54 @@ class June2026
     end
 
     max_sum
+  end
+
+  # 1840. Maximum Building Height
+  # @param {Integer} n
+  # @param {Integer[][]} restrictions
+  # @return {Integer}
+  def max_building(n, restrictions)
+    # Ensure building 1 is present with height 0
+    restrictions << [1, 0]
+
+    # If building n is not restricted, its max possible is n - 1
+    restrictions << [n, n - 1] unless restrictions.any? { |id, _h| id == n }
+
+    # Sort by building index
+    restrictions.sort_by! { |id, _h| id }
+
+    # Left-to-right pass to enforce slope constraint from the left
+    (1...restrictions.length).each do |i|
+      prev_id, prev_h = restrictions[i - 1]
+      cur_id, cur_h   = restrictions[i]
+      dist = cur_id - prev_id
+      # cannot be higher than prev_h + dist
+      max_from_left = prev_h + dist
+      restrictions[i][1] = max_from_left if cur_h > max_from_left
+    end
+
+    # Right-to-left pass to enforce slope constraint from the right
+    (restrictions.length - 2).downto(0) do |i|
+      next_id, next_h = restrictions[i + 1]
+      cur_id, cur_h   = restrictions[i]
+      dist = next_id - cur_id
+      # cannot be higher than next_h + dist
+      max_from_right = next_h + dist
+      restrictions[i][1] = max_from_right if cur_h > max_from_right
+    end
+
+    # Now compute maximum possible height between each consecutive pair
+    max_height = 0
+
+    (1...restrictions.length).each do |i|
+      id1, h1 = restrictions[i - 1]
+      id2, h2 = restrictions[i]
+      dist = id2 - id1
+      # Max peak you can get in this segment
+      segment_peak = (h1 + h2 + dist) / 2
+      max_height = [max_height, segment_peak].max
+    end
+
+    max_height
   end
 end
