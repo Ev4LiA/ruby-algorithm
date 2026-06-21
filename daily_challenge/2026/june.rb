@@ -283,4 +283,35 @@ class June2026
 
     max_height
   end
+
+  # 1833. Maximum Ice Cream Bars
+  # @param {Integer[]} costs
+  # @param {Integer} coins
+  # @return {Integer}
+  def max_ice_cream(costs, coins)
+    # Constraints say costs[i] <= 1e5, so we can use counting sort
+    max_cost = costs.max
+    counts = Array.new(max_cost + 1, 0)
+
+    # Frequency of each cost
+    costs.each do |c|
+      counts[c] += 1
+    end
+
+    bought = 0
+
+    # Greedily buy from cheapest to most expensive
+    (1..max_cost).each do |price|
+      break if coins < price
+
+      next unless counts[price] > 0
+
+      # How many of this price can we buy with remaining coins?
+      can_buy = [counts[price], coins / price].min
+      bought += can_buy
+      coins  -= can_buy * price
+    end
+
+    bought
+  end
 end
