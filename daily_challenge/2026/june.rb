@@ -314,4 +314,23 @@ class June2026
 
     bought
   end
+
+  # 1189. Maximum Number of Balloons
+  # @param {String} text
+  # @return {Integer}
+  def max_number_of_balloons(text)
+    needed = {
+      "b" => 1,
+      "a" => 1,
+      "l" => 2,
+      "o" => 2,
+      "n" => 1
+    }
+
+    freq = Hash.new(0)
+    text.each_char { |ch| freq[ch] += 1 }
+
+    # For each required character, compute how many times it supports "balloon"
+    needed.map { |ch, cnt| freq[ch] / cnt }.min
+  end
 end
