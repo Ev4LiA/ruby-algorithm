@@ -333,4 +333,51 @@ class June2026
     # For each required character, compute how many times it supports "balloon"
     needed.map { |ch, cnt| freq[ch] / cnt }.min
   end
+
+  # 3699. Number of ZigZag Arrays I
+  # @param {Integer} n
+  # @param {Integer} l
+  # @param {Integer} r
+  # @return {Integer}
+  def zig_zag_arrays(n, l, r)
+    mod = 1_000_000_007
+
+    # We keep original value range [l, r] and index arrays by value.
+    dp0  = Array.new(r + 1, 0)  # last step is decreasing (dir = 0)
+    dp1  = Array.new(r + 1, 0)  # last step is increasing (dir = 1)
+    sum0 = Array.new(r + 2, 0)  # prefix sums for dp0
+    sum1 = Array.new(r + 2, 0)  # prefix sums for dp1
+
+    # Base: sequences of length 1, each value in [l, r] has exactly 1 sequence
+    (l..r).each do |x|
+      dp0[x] = 1
+      dp1[x] = 1
+      # prefix sum over [l, x]
+      offset = x - l + 1
+      sum0[x] = offset
+      sum1[x] = offset
+    end
+
+    # Build sequences from length 2 to n using rolling arrays
+    (1...n).each do
+      # Transition using prefix sums from previous layer
+      (l..r).each do |j|
+        # dp[i][0][j] = sum_{k=j+1..r} dp[i-1][1][k]
+        dp0[j] = (sum1[r] - sum1[j] + mod) % mod
+        # dp[i][1][j] = sum_{k=l..j-1} dp[i-1][0][k]
+        dp1[j] = sum0[j - 1] % mod
+      end
+
+      # Rebuild prefix sums for current dp0, dp1
+      sum0[l] = dp0[l] % mod
+      sum1[l] = dp1[l] % mod
+
+      (l + 1..r).each do |j|
+        sum0[j] = (sum0[j - 1] + dp0[j]) % mod
+        sum1[j] = (sum1[j - 1] + dp1[j]) % mod
+      end
+    end
+
+    (sum0[r] + sum1[r]) % mod
+  end
 end
