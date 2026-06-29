@@ -380,4 +380,17 @@ class June2026
 
     (sum0[r] + sum1[r]) % mod
   end
+
+  # 1967. Number of Strings That Appear as Substrings in Word
+  # @param {String[]} patterns
+  # @param {String} word
+  # @return {Integer}
+  def num_of_strings(patterns, word)
+    res = 0
+    patterns.each do |pat|
+      res += 1 if word.include?(pat)
+    end
+
+    res
+  end
 end
