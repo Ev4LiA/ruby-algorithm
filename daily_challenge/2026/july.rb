@@ -33,4 +33,92 @@ class July2026
 
     min_edge
   end
+
+  # 1301. Number of Paths with Max Score
+  # @param {String[]} board
+  # @return {Integer[]}
+  def paths_with_max_score(board)
+    n = board.length
+    mod = 1_000_000_007
+
+    # dp_score[i][j] = max score to reach (i,j)
+    # dp_cnt[i][j]   = number of max-score paths to (i,j)
+    neg_inf = -10**15
+    dp_score = Array.new(n) { Array.new(n, neg_inf) }
+    dp_cnt   = Array.new(n) { Array.new(n, 0) }
+
+    # Start at 'S' (bottom-right)
+    dp_score[n - 1][n - 1] = 0
+    dp_cnt[n - 1][n - 1]   = 1
+
+    (n - 1).downto(0) do |i|
+      (n - 1).downto(0) do |j|
+        ch = board[i][j]
+
+        # Skip obstacles
+        next if ch == "X"
+
+        # Start cell already initialized
+        next if i == n - 1 && j == n - 1
+
+        # Gather candidates from (i+1,j), (i,j+1), (i+1,j+1)
+        best_score = neg_inf
+        ways = 0
+
+        # from below
+        if i + 1 < n && dp_cnt[i + 1][j] > 0
+          s = dp_score[i + 1][j]
+          if s > best_score
+            best_score = s
+            ways = dp_cnt[i + 1][j]
+          elsif s == best_score
+            ways = (ways + dp_cnt[i + 1][j]) % mod
+          end
+        end
+
+        # from right
+        if j + 1 < n && dp_cnt[i][j + 1] > 0
+          s = dp_score[i][j + 1]
+          if s > best_score
+            best_score = s
+            ways = dp_cnt[i][j + 1]
+          elsif s == best_score
+            ways = (ways + dp_cnt[i][j + 1]) % mod
+          end
+        end
+
+        # from diagonal (down-right)
+        if i + 1 < n && j + 1 < n && dp_cnt[i + 1][j + 1] > 0
+          s = dp_score[i + 1][j + 1]
+          if s > best_score
+            best_score = s
+            ways = dp_cnt[i + 1][j + 1]
+          elsif s == best_score
+            ways = (ways + dp_cnt[i + 1][j + 1]) % mod
+          end
+        end
+
+        # If unreachable, leave as default
+        next if ways == 0
+
+        # Cell value: digits add to score; 'E' and 'S' contribute 0
+        val =
+          if ch >= "0" && ch <= "9"
+            ch.ord - "0".ord
+          else
+            0
+          end
+
+        dp_score[i][j] = best_score + val
+        dp_cnt[i][j]   = ways % mod
+      end
+    end
+
+    # Result is at 'E' (0,0)
+    if dp_cnt[0][0] == 0
+      [0, 0]
+    else
+      [dp_score[0][0] % mod, dp_cnt[0][0] % mod]
+    end
+  end
 end
