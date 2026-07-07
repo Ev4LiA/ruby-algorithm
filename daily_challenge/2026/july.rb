@@ -121,4 +121,30 @@ class July2026
       [dp_score[0][0] % mod, dp_cnt[0][0] % mod]
     end
   end
+
+  # 3754. Concatenate Non-Zero Digits and Multiply by Sum I
+  # @param {Integer} n
+  # @return {Integer}
+  def sum_and_multiply(n)
+    x = 0 # concatenated non-zero digits
+    digit_sum = 0 # sum of digits in x
+
+    # Special-case n == 0: there are no non-zero digits -> x = 0, result = 0
+    return 0 if n == 0
+
+    # Collect digits in correct order without converting to string
+    digits = []
+    while n > 0
+      digits << (n % 10)
+      n /= 10
+    end
+    digits.reverse_each do |d|
+      next if d == 0
+
+      x = (x * 10) + d
+      digit_sum += d
+    end
+
+    x * digit_sum
+  end
 end
