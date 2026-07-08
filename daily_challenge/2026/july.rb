@@ -147,4 +147,112 @@ class July2026
 
     x * digit_sum
   end
+
+  # 3756. Concatenate Non-Zero Digits and Multiply by Sum II
+  # @param {String} s
+  # @param {Integer[][]} queries
+  # @return {Integer[]}
+  def sum_and_multiply(s, queries)
+    mod = 1_000_000_007
+
+    n = s.length
+    # Collect non-zero digits and their original positions
+    nz_pos = []
+    nz_dig = []
+
+    s.each_char.with_index do |ch, i|
+      next if ch == "0"
+
+      nz_pos << i
+      nz_dig << (ch.ord - 48) # '0'.ord = 48
+    end
+
+    k = nz_pos.length
+    # Edge case: no non-zero digit at all
+    return Array.new(queries.length, 0) if k == 0
+
+    # Precompute powers of 10, prefix values, prefix digit sums
+    pow10 = Array.new(k + 1, 0)
+    pow10[0] = 1
+    (1..k).each do |i|
+      pow10[i] = (pow10[i - 1] * 10) % mod
+    end
+
+    # pref_val[i] = value of concatenation of first i digits nz_dig[0...i]
+    # pref_dig[i] = sum of first i digits
+    pref_val = Array.new(k + 1, 0)
+    pref_dig = Array.new(k + 1, 0)
+
+    (0...k).each do |i|
+      d = nz_dig[i]
+      pref_val[i + 1] = ((pref_val[i] * 10) + d) % mod
+      pref_dig[i + 1] = (pref_dig[i] + d) % mod
+    end
+
+    # Helper: lower_bound on nz_pos for >= target
+    # returns smallest index i such that nz_pos[i] >= target, or k if none
+    lower_bound = lambda do |target|
+      lo = 0
+      hi = k
+      while lo < hi
+        mid = (lo + hi) / 2
+        if nz_pos[mid] >= target
+          hi = mid
+        else
+          lo = mid + 1
+        end
+      end
+      lo
+    end
+
+    # Helper: upper_bound on nz_pos for > target
+    # returns smallest index i such that nz_pos[i] > target, or k if none
+    upper_bound = lambda do |target|
+      lo = 0
+      hi = k
+      while lo < hi
+        mid = (lo + hi) / 2
+        if nz_pos[mid] > target
+          hi = mid
+        else
+          lo = mid + 1
+        end
+      end
+      lo
+    end
+
+    res = Array.new(queries.length, 0)
+
+    queries.each_with_index do |(l, r), idx|
+      # Find range [L, R] in nz_pos s.t. l <= pos <= r
+      left_idx  = lower_bound.call(l)
+      right_idx = upper_bound.call(r) - 1
+
+      if left_idx > right_idx
+        res[idx] = 0
+        next
+      end
+
+      len = right_idx - left_idx + 1
+
+      # Compute x via prefix difference:
+      # x = digits[left_idx..right_idx]
+      # x = pref_val[right_idx+1] - pref_val[left_idx] * 10^len
+      x = pref_val[right_idx + 1] -
+          ((pref_val[left_idx] * pow10[len]) % mod)
+      x %= mod
+      x += mod if x < 0
+      x %= mod
+
+      # Sum of digits in that range
+      sum_d = pref_dig[right_idx + 1] - pref_dig[left_idx]
+      sum_d %= mod
+      sum_d += mod if sum_d < 0
+      sum_d %= mod
+
+      res[idx] = (x * sum_d) % mod
+    end
+
+    res
+  end
 end
