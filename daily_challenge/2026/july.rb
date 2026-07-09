@@ -255,4 +255,29 @@ class July2026
 
     res
   end
+
+  # 3532. Path Existence Queries in a Graph I
+  # @param {Integer} n
+  # @param {Integer[]} nums
+  # @param {Integer} max_diff
+  # @param {Integer[][]} queries
+  # @return {Boolean[]}
+  def path_existence_queries(n, nums, max_diff, queries)
+    # comp[i] = component id for node i
+    comp = Array.new(n, 0)
+
+    (1...n).each do |i|
+      comp[i] = if nums[i] - nums[i - 1] <= max_diff
+                  # same component as previous
+                  comp[i - 1]
+                else
+                  # start a new component
+                  comp[i - 1] + 1
+                end
+    end
+
+    queries.map do |u, v|
+      comp[u] == comp[v]
+    end
+  end
 end
