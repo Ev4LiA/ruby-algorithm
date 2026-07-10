@@ -280,4 +280,71 @@ class July2026
       comp[u] == comp[v]
     end
   end
+
+  # 3534. Path Existence Queries in a Graph II
+  # @param {Integer} n
+  # @param {Integer[]} nums
+  # @param {Integer} max_diff
+  # @param {Integer[][]} queries
+  # @return {Integer[]}
+  def path_existence_queries(n, nums, max_diff, queries)
+    # idx[i] = original index of i-th element in sorted order
+    # pos[i] = position of original index i in sorted order
+    idx = Array.new(n)
+    pos = Array.new(n)
+
+    ord = (0...n).to_a
+    ord.sort_by! { |i| nums[i] }
+
+    (0...n).each do |i|
+      idx[i] = ord[i]
+      pos[idx[i]] = i
+    end
+
+    # m = ceil(log2(n+1)) but in Java they used: 32 - numberOfLeadingZeros(n)
+    # For n <= 1e5, at most 17 bits; we can just compute properly:
+    m = (Math.log2(n).floor + 1)
+
+    # f[i][j] = position reached after 2^j jumps to the left starting from i
+    f = Array.new(n) { Array.new(m, 0) }
+
+    left = 0
+    (0...n).each do |i|
+      left += 1 while left < i && nums[idx[i]] - nums[idx[left]] > max_diff
+      f[i][0] = left
+    end
+
+    (1...m).each do |j|
+      (0...n).each do |i|
+        f[i][j] = f[f[i][j - 1]][j - 1]
+      end
+    end
+
+    ans = Array.new(queries.length, 0)
+
+    queries.each_with_index do |(u, v), k|
+      x = pos[u]
+      y = pos[v]
+
+      x, y = y, x if x > y
+
+      if x == y
+        ans[k] = 0
+        next
+      end
+
+      step = 0
+
+      (m - 1).downto(0) do |i|
+        if f[y][i] > x
+          y = f[y][i]
+          step += 1 << i
+        end
+      end
+
+      ans[k] = f[y][0] <= x ? (step + 1) : -1
+    end
+
+    ans
+  end
 end
