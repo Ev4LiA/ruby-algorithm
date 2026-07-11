@@ -347,4 +347,55 @@ class July2026
 
     ans
   end
+
+  # 2685. Count the Number of Complete Components
+  # @param {Integer} n
+  # @param {Integer[][]} edges
+  # @return {Integer}
+  def count_complete_components(n, edges)
+    # Build adjacency list
+    graph = Array.new(n) { [] }
+    edges.each do |u, v|
+      graph[u] << v
+      graph[v] << u
+    end
+
+    visited = Array.new(n, false)
+    complete_count = 0
+
+    # DFS that returns [vertex_count, edge_ends_count]
+    dfs = lambda do |start|
+      stack = [start]
+      visited[start] = true
+
+      vertices = 0
+      edge_ends = 0
+
+      until stack.empty?
+        node = stack.pop
+        vertices += 1
+        edge_ends += graph[node].length
+
+        graph[node].each do |nei|
+          next if visited[nei]
+
+          visited[nei] = true
+          stack << nei
+        end
+      end
+
+      [vertices, edge_ends]
+    end
+
+    (0...n).each do |v|
+      next if visited[v]
+
+      vertices, edge_ends = dfs.call(v)
+      # In an undirected graph with adjacency list counting each edge twice:
+      # a complete component with k vertices has k * (k - 1) total "edge ends"
+      complete_count += 1 if edge_ends == vertices * (vertices - 1)
+    end
+
+    complete_count
+  end
 end
