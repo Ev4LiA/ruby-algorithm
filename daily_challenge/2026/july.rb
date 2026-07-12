@@ -398,4 +398,23 @@ class July2026
 
     complete_count
   end
+
+  # 1331. Rank Transform of an Array
+  # @param {Integer[]} arr
+  # @return {Integer[]}
+  def array_rank_transform(arr)
+    return [] if arr.empty?
+
+    # Get sorted unique values
+    sorted_unique = arr.uniq.sort
+
+    # Map each value to its rank (1-based)
+    rank = {}
+    sorted_unique.each_with_index do |val, idx|
+      rank[val] = idx + 1
+    end
+
+    # Transform original array using the rank map
+    arr.map { |val| rank[val] }
+  end
 end
