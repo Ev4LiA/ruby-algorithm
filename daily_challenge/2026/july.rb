@@ -417,4 +417,18 @@ class July2026
     # Transform original array using the rank map
     arr.map { |val| rank[val] }
   end
+
+  # 1979. Find Greatest Common Divisor of Array
+  # @param {Integer[]} nums
+  # @return {Integer}
+  def find_gcd(nums)
+    mn = nums.min
+    mx = nums.max
+    gcd = lambda do |a, b|
+      a, b = b, a % b while b != 0
+
+      a
+    end
+    gcd.call(mn, mx)
+  end
 end
