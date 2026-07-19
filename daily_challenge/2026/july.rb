@@ -431,4 +431,39 @@ class July2026
     end
     gcd.call(mn, mx)
   end
+
+  # 1081. Smallest Subsequence of Distinct Characters
+  # @param {String} s
+  # @return {String}
+  def smallest_subsequence(s)
+    # Last occurrence index of each character
+    last_index = {}
+    s.chars.each_with_index do |ch, i|
+      last_index[ch] = i
+    end
+
+    stack = []          # acts as a monotonically increasing stack by char
+    in_stack = {}       # whether a character is already in stack
+
+    s.chars.each_with_index do |ch, i|
+      # Skip if this character is already used in the stack
+      next if in_stack[ch]
+
+      # While:
+      # - stack not empty
+      # - top char is greater than current char (so we can get lexicographically smaller)
+      # - and the top char will appear again later (so it's safe to pop and add later)
+      while !stack.empty? &&
+            stack[-1] > ch &&
+            last_index[stack[-1]] > i
+        removed = stack.pop
+        in_stack[removed] = false
+      end
+
+      stack << ch
+      in_stack[ch] = true
+    end
+
+    stack.join
+  end
 end
