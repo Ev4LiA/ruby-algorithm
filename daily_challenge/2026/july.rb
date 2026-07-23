@@ -466,4 +466,32 @@ class July2026
 
     stack.join
   end
+
+  # 3513. Number of Unique XOR Triplets I
+  # @param {Integer[]} nums
+  # @return {Integer}
+  def unique_xor_triplets(nums)
+    n = nums.length
+
+    # Handle small n explicitly by brute force.
+    # This is O(1) since n <= 2 here.
+    if n <= 2
+      values = {}
+      (0...n).each do |i|
+        (i...n).each do |j|
+          (j...n).each do |k|
+            xor_val = nums[i] ^ nums[j] ^ nums[k]
+            values[xor_val] = true
+          end
+        end
+      end
+      return values.size
+    end
+
+    # For n >= 3:
+    # We can obtain all values in [0, 2^(msb(n) + 1) - 1],
+    # so the number of unique values is exactly 2^(msb(n) + 1).
+    msb = Math.log2(n).floor
+    1 << (msb + 1)
+  end
 end
