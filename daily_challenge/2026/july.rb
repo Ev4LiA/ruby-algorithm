@@ -494,4 +494,13 @@ class July2026
     msb = Math.log2(n).floor
     1 << (msb + 1)
   end
+
+  # 628. Maximum Product of Three Numbers
+  # @param {Integer[]} nums
+  # @return {Integer}
+  def maximum_product(nums)
+    nums.sort!
+    n = nums.length
+    [nums[-1] * nums[-2] * nums[-3], nums[0] * nums[1] * nums[-1]].max
+  end
 end
