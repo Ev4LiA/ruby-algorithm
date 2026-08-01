@@ -81,4 +81,3 @@ class Contest512
     (total - odd) % MOD
   end
 end
-
