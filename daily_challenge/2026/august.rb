@@ -46,5 +46,37 @@ class August2026
     end
 
     dp[0][n - 1] > 0
-  end 
+  end
+
+  # 1406. Stone Game III
+  # @param {Integer[]} stone_value
+  # @return {String}
+  def stone_game_iii(stone_value)
+    n = stone_value.size
+    # dp[i] = best score difference (current player - opponent)
+    # achievable starting from index i, playing optimally.
+    dp = Array.new(n + 1, 0)
+
+    (n - 1).downto(0) do |i|
+      take = 0
+      best = -Float::INFINITY
+      # Take 1, 2, or 3 stones from the front of the remaining row.
+      (0..2).each do |k|
+        break if i + k >= n
+
+        take += stone_value[i + k]
+        # Current gain minus the best the opponent can then achieve.
+        best = [best, take - dp[i + k + 1]].max
+      end
+      dp[i] = best
+    end
+
+    if dp[0].positive?
+      "Alice"
+    elsif dp[0].negative?
+      "Bob"
+    else
+      "Tie"
+    end
+  end
 end
