@@ -79,4 +79,12 @@ class August2026
       "Tie"
     end
   end
+
+  # 3731. Find Missing Elements
+  # @param {Integer[]} nums
+  # @return {Integer[]}
+  def find_missing_elements(nums)
+    present = nums.to_set
+    (nums.min..nums.max).reject { |n| present.include?(n) }
+  end
 end
