@@ -87,4 +87,37 @@ class August2026
     present = nums.to_set
     (nums.min..nums.max).reject { |n| present.include?(n) }
   end
+
+  # 3310. Remove Methods From Project
+  # @param {Integer} n
+  # @param {Integer} k
+  # @param {Integer[][]} invocations
+  # @return {Integer[]}
+  def remaining_methods(n, k, invocations)
+    # Build adjacency list
+    adj = Array.new(n) { [] }
+    invocations.each { |a, b| adj[a] << b }
+
+    # DFS from k to mark all suspicious methods
+    suspicious = Array.new(n, false)
+    stack = [k]
+    suspicious[k] = true
+    until stack.empty?
+      node = stack.pop
+      adj[node].each do |nxt|
+        unless suspicious[nxt]
+          suspicious[nxt] = true
+          stack << nxt
+        end
+      end
+    end
+
+    # If any non-suspicious method invokes a suspicious one, we can't remove the group
+    invocations.each do |a, b|
+      return (0...n).to_a if !suspicious[a] && suspicious[b]
+    end
+
+    # Otherwise return all non-suspicious methods
+    (0...n).reject { |i| suspicious[i] }
+  end
 end
