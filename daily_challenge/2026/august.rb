@@ -120,4 +120,18 @@ class August2026
     # Otherwise return all non-suspicious methods
     (0...n).reject { |i| suspicious[i] }
   end
+
+  # 3345. Smallest Divisible Digit Product I
+  # @param {Integer} n
+  # @param {Integer} t
+  # @return {Integer}
+  def smallest_number(n, t)
+    num = n
+    loop do
+      product = num.digits.reduce(:*)
+      return num if product % t == 0
+
+      num += 1
+    end
+  end
 end
