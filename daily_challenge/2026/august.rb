@@ -134,4 +134,26 @@ class August2026
       num += 1
     end
   end
+
+  # 1510. Stone Game IV
+  # @param {Integer} n
+  # @return {Boolean}
+  def winner_square_game(n)
+    # dp[i] = true if the player to move wins with i stones remaining
+    dp = Array.new(n + 1, false)
+
+    (1..n).each do |i|
+      k = 1
+      while k * k <= i
+        # If any move leaves the opponent in a losing state, current player wins
+        unless dp[i - (k * k)]
+          dp[i] = true
+          break
+        end
+        k += 1
+      end
+    end
+
+    dp[n]
+  end
 end
