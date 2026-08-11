@@ -156,4 +156,23 @@ class August2026
 
     dp[n]
   end
+
+  # 2996. Smallest Missing Integer Greater Than Sequential Prefix Sum
+  # @param {Integer[]} nums
+  # @return {Integer}
+  def missing_integer(nums)
+    # Sum the longest sequential prefix
+    sum = nums[0]
+    (1...nums.length).each do |i|
+      break unless nums[i] == nums[i - 1] + 1
+
+      sum += nums[i]
+    end
+
+    # Find the smallest missing integer >= sum
+    seen = nums.to_set
+    x = sum
+    x += 1 while seen.include?(x)
+    x
+  end
 end
