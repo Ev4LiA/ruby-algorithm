@@ -175,4 +175,28 @@ class August2026
     x += 1 while seen.include?(x)
     x
   end
+
+  # Length of Longest Subarray With at Most K Frequency
+  # @param {Integer[]} nums
+  # @param {Integer} k
+  # @return {Integer}
+  def max_subarray_length(nums, k)
+    freq = Hash.new(0)
+    left = 0
+    best = 0
+
+    nums.each_with_index do |num, right|
+      freq[num] += 1
+
+      # Shrink from the left while this element breaks the "good" condition
+      while freq[num] > k
+        freq[nums[left]] -= 1
+        left += 1
+      end
+
+      best = [best, right - left + 1].max
+    end
+
+    best
+  end
 end
