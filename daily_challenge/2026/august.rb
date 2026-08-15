@@ -199,4 +199,18 @@ class August2026
 
     best
   end
+
+  # 3702. Longest Subsequence With Non-Zero Bitwise XOR
+  # @param {Integer[]} nums
+  # @return {Integer}
+  def longest_subsequence(nums)
+    total = nums.reduce(0, :^)
+
+    # If the XOR of the whole array is non-zero, take everything.
+    return nums.length if total != 0
+
+    # XOR is zero. If there's at least one non-zero element, drop one
+    # to break the cancellation -> length n - 1. Otherwise all zeros -> 0.
+    nums.any? { |x| x != 0 } ? nums.length - 1 : 0
+  end
 end
