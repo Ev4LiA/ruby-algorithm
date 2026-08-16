@@ -213,4 +213,32 @@ class August2026
     # to break the cancellation -> length n - 1. Otherwise all zeros -> 0.
     nums.any? { |x| x != 0 } ? nums.length - 1 : 0
   end
+
+  # 2029. Stone Game IX
+  # @param {Integer[]} stones
+  # @return {Boolean}
+  def stone_game_ix(stones)
+    # Only remainders mod 3 matter
+    cnt = [0, 0, 0]
+    stones.each { |s| cnt[s % 3] += 1 }
+
+    c0 = cnt[0]
+    c1 = cnt[1]
+    c2 = cnt[2]
+
+    # If there are no 1s and no 2s, Alice can't make a legal first move
+    # that avoids losing later — she loses.
+    return false if c1 == 0 && c2 == 0
+
+    if c0.even?
+      # Zeros act as "pass"/parity flips that cancel out in pairs.
+      # Alice wins unless both counts are zero (handled) — she wins
+      # if there's at least one 1 and one 2.
+      c1 >= 1 && c2 >= 1
+    else
+      # Odd number of zeros effectively swaps whose "turn parity" it is.
+      # Alice wins only if the counts differ by more than 2.
+      (c1 - c2).abs > 2
+    end
+  end
 end
