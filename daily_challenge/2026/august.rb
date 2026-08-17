@@ -241,4 +241,40 @@ class August2026
       (c1 - c2).abs > 2
     end
   end
+
+  # 1563. Stone Game V
+  # @param {Integer[]} stone_value
+  # @return {Integer}
+  def stone_game_v(stone_value)
+    n = stone_value.length
+    @f = Array.new(n) { Array.new(n, 0) }
+    dfs(stone_value, 0, n - 1)
+  end
+
+  def dfs(stone_value, left, right)
+    return 0 if left == right
+    return @f[left][right] if @f[left][right] != 0
+
+    sum = 0
+    (left..right).each { |i| sum += stone_value[i] }
+
+    suml = 0
+    (left...right).each do |i|
+      suml += stone_value[i]
+      sumr = sum - suml
+
+      @f[left][right] = if suml < sumr
+                          [@f[left][right], dfs(stone_value, left, i) + suml].max
+                        elsif suml > sumr
+                          [@f[left][right], dfs(stone_value, i + 1, right) + sumr].max
+                        else
+                          [
+                            @f[left][right],
+                            [dfs(stone_value, left, i), dfs(stone_value, i + 1, right)].max + suml
+                          ].max
+                        end
+    end
+
+    @f[left][right]
+  end
 end
