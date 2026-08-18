@@ -277,4 +277,36 @@ class August2026
 
     @f[left][right]
   end
+
+  # 3471. Find the Largest Almost Missing Integer
+  # @param {Integer[]} nums
+  # @param {Integer} k
+  # @return {Integer}
+  def largest_integer(nums, k)
+    n = nums.length
+    counts = Hash.new(0)
+    nums.each { |x| counts[x] += 1 }
+
+    # k == n: the whole array is the only subarray, so every distinct
+    # value appears in exactly one subarray. Answer is the max element.
+    return nums.max if k == n
+
+    if k == 1
+      # Each element is its own subarray of size 1. A value is "almost
+      # missing" iff it occurs exactly once in nums.
+      best = -1
+      counts.each { |val, c| best = val if c == 1 && val > best }
+      return best
+    end
+
+    # 1 < k < n: only the first and last elements can appear in exactly
+    # one window (the leftmost/rightmost). Any interior value spans at
+    # least two windows. Each endpoint qualifies only if it's unique.
+    best = -1
+    first = nums[0]
+    last = nums[n - 1]
+    best = first if counts[first] == 1 && first > best
+    best = last  if counts[last]  == 1 && last  > best
+    best
+  end
 end
