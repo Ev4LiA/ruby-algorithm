@@ -309,4 +309,36 @@ class August2026
     best = last  if counts[last]  == 1 && last  > best
     best
   end
+
+  # 1386. Cinema Seat Allocation
+  # @param {Integer} n
+  # @param {Integer[][]} reserved_seats
+  # @return {Integer}
+  def max_number_of_families(n, reserved_seats)
+    # For each row that has any reservation, track which of seats 2..9
+    # are taken using a bitmask. Seats 1 and 10 never matter.
+    rows = Hash.new(0)
+    reserved_seats.each do |row, seat|
+      rows[row] |= (1 << seat) if seat >= 2 && seat <= 9
+    end
+
+    # Three candidate blocks (bits set for the seats each occupies):
+    left   = (1 << 2) | (1 << 3) | (1 << 4) | (1 << 5)  # seats 2-5
+    middle = (1 << 4) | (1 << 5) | (1 << 6) | (1 << 7)  # seats 4-7
+    right  = (1 << 6) | (1 << 7) | (1 << 8) | (1 << 9)  # seats 6-9
+
+    # Untouched rows can each seat 2 groups (2-5 and 6-9).
+    count = (n - rows.size) * 2
+
+    rows.each_value do |mask|
+      if (mask & left).zero? && (mask & right).zero?
+        count += 2               # both outer blocks fit
+      elsif (mask & left).zero? || (mask & middle).zero? || (mask & right).zero?
+        count += 1               # exactly one block fits
+      end
+      # otherwise 0 groups for this row
+    end
+
+    count
+  end
 end
