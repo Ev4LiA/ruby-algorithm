@@ -341,4 +341,22 @@ class August2026
 
     count
   end
+
+  # 3069. Distribute Elements Into Two Arrays I
+  # @param {Integer[]} nums
+  # @return {Integer[]}
+  def result_array(nums)
+    arr1 = [nums[0]]
+    arr2 = [nums[1]]
+
+    (2...nums.length).each do |i|
+      if arr1.last > arr2.last
+        arr1 << nums[i]
+      else
+        arr2 << nums[i]
+      end
+    end
+
+    arr1 + arr2
+  end
 end
