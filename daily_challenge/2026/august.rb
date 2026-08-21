@@ -359,4 +359,48 @@ class August2026
 
     arr1 + arr2
   end
+
+  # 3116. Kth Smallest Amount With Single Denomination Combination
+  # @param {Integer[]} coins
+  # @param {Integer} k
+  # @return {Integer}
+  def find_kth_smallest(coins, k)
+    n = coins.length
+
+    # Precompute, for every non-empty subset, the LCM of its coins
+    # and the sign (+ for odd-sized subsets, - for even) per inclusion-exclusion.
+    terms = []
+    (1...(1 << n)).each do |mask|
+      lcm = 1
+      bits = 0
+      n.times do |i|
+        next if mask[i].zero?
+
+        bits += 1
+        lcm = lcm.lcm(coins[i])
+      end
+      sign = bits.odd? ? 1 : -1
+      terms << [lcm, sign]
+    end
+
+    # Count distinct amounts in [1, x] reachable by any single denomination.
+    count_upto = lambda do |x|
+      total = 0
+      terms.each { |lcm, sign| total += sign * (x / lcm) }
+      total
+    end
+
+    # Binary search for the smallest x with count_upto(x) >= k.
+    lo = 1
+    hi = coins.min * k # safe upper bound: k-th multiple of the smallest coin
+    while lo < hi
+      mid = (lo + hi) / 2
+      if count_upto.call(mid) >= k
+        hi = mid
+      else
+        lo = mid + 1
+      end
+    end
+    lo
+  end
 end
