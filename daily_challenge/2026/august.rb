@@ -403,4 +403,14 @@ class August2026
     end
     lo
   end
+
+  # 3622. Check Divisibility by Digit Sum and Product
+  # @param {Integer} n
+  # @return {Boolean}
+  def check_divisibility(n)
+    digits = n.digits          # e.g. 99 -> [9, 9]
+    sum = digits.sum           # digit sum
+    product = digits.reduce(:*) # digit product
+    n % (sum + product) == 0
+  end
 end
