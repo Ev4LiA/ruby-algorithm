@@ -413,4 +413,30 @@ class August2026
     product = digits.reduce(:*) # digit product
     n % (sum + product) == 0
   end
+
+  # 1927. Sum Game
+  # @param {String} num
+  # @return {Boolean}
+  def sum_game(num)
+    n = num.length
+    half = n / 2
+
+    s1 = s2 = 0   # digit sums of each half
+    q1 = q2 = 0   # count of '?' in each half
+
+    num.each_char.with_index do |c, i|
+      if c == "?"
+        i < half ? (q1 += 1) : (q2 += 1)
+      else
+        i < half ? (s1 += c.to_i) : (s2 += c.to_i)
+      end
+    end
+
+    # Odd total of '?' -> Alice always gets the last move and can break equality.
+    return true if (q1 + q2).odd?
+
+    # Even total: Bob wins iff he can force equality, which happens exactly when
+    # the sum gap equals 9/2 per surplus '?'. 2*(s1 - s2) == 9*(q2 - q1).
+    2 * (s1 - s2) != 9 * (q2 - q1)
+  end
 end
