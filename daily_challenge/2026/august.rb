@@ -439,4 +439,15 @@ class August2026
     # the sum gap equals 9/2 per surplus '?'. 2*(s1 - s2) == 9*(q2 - q1).
     2 * (s1 - s2) != 9 * (q2 - q1)
   end
+
+  # 3718. Smallest Missing Multiple of K
+  # @param {Integer[]} nums
+  # @param {Integer} k
+  # @return {Integer}
+  def missing_multiple(nums, k)
+    seen = nums.to_set
+    m = k
+    m += k while seen.include?(m)
+    m
+  end
 end
