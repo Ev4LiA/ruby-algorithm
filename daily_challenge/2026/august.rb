@@ -479,4 +479,48 @@ class August2026
 
     best
   end
+
+  # 3720. Lexicographically Smallest Permutation Greater Than Target
+  # @param {String} s
+  # @param {String} target
+  # @return {String}
+  def lex_greater_permutation(s, target)
+    n = s.length
+    base = "a".ord
+    freq = Array.new(26, 0)
+    s.each_char { |ch| freq[ch.ord - base] += 1 }
+
+    # Walk left-to-right matching target exactly, and record the LATEST
+    # position where a character strictly greater than target[i] is still
+    # available. Breaking as late as possible keeps the result closest to
+    # target, which makes it the smallest permutation that still exceeds it.
+    work = freq.dup
+    best = -1
+    (0...n).each do |i|
+      t = target[i].ord - base
+      best = i if ((t + 1)...26).any? { |c| work[c] > 0 }
+      break if work[t] == 0 # can't keep matching target here
+
+      work[t] -= 1
+    end
+
+    return "" if best == -1
+
+    # Rebuild: copy target[0...best], place the smallest char > target[best],
+    # then dump the remaining characters in ascending order.
+    avail = freq.dup
+    result = []
+    (0...best).each do |i|
+      avail[target[i].ord - base] -= 1
+      result << target[i]
+    end
+
+    t = target[best].ord - base
+    bump = ((t + 1)...26).find { |c| avail[c] > 0 }
+    avail[bump] -= 1
+    result << (base + bump).chr
+
+    (0...26).each { |c| avail[c].times { result << (base + c).chr } }
+    result.join
+  end
 end
