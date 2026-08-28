@@ -523,4 +523,64 @@ class August2026
     (0...26).each { |c| avail[c].times { result << (base + c).chr } }
     result.join
   end
+
+  # 3734. Lexicographically Smallest Palindromic Permutation Greater Than Target
+  # @param {String} s
+  # @param {String} target
+  # @return {String}
+  def lex_palindromic_permutation(s, target)
+    n = s.length
+    cnt = Array.new(26, 0)
+    s.each_char { |ch| cnt[ch.ord - 97] += 1 }
+
+    # Feasibility: even length -> no odd counts; odd length -> exactly one.
+    odd = cnt.count(&:odd?)
+    return "" if (n.even? && odd != 0) || (n.odd? && odd != 1)
+
+    mid  = ""
+    half = Array.new(26, 0)
+    (0...26).each do |i|
+      half[i] = cnt[i] / 2
+      mid = (i + 97).chr if cnt[i].odd?
+    end
+
+    h  = n / 2
+    t1 = target[0, h] # target's first half
+    build = ->(fh) { fh + mid + fh.reverse } # first half -> full palindrome
+
+    # Step 1: first half exactly == t1 (only if the multiset allows it).
+    t1_cnt = Array.new(26, 0)
+    t1.each_char { |ch| t1_cnt[ch.ord - 97] += 1 }
+    if t1_cnt == half
+      cand = build.call(t1)
+      return cand if cand > target
+    end
+
+    # Step 2: smallest arrangement of the half-multiset strictly greater than t1.
+    # Match t1 as long as possible; remember the LATEST spot we can place a
+    # bigger char, then fill the rest ascending.
+    avail     = half.dup
+    best_bump = nil
+    prefix    = +""
+
+    (0...h).each do |i|
+      ti = t1[i].ord - 97
+      bigger = ((ti + 1)...26).find { |c| avail[c] > 0 }
+      if bigger
+        rem = avail.dup
+        rem[bigger] -= 1
+        best_bump = [prefix + (bigger + 97).chr, rem]
+      end
+      break if avail[ti] == 0 # can't stay tight any further
+
+      avail[ti] -= 1
+      prefix << t1[i]
+    end
+
+    return "" if best_bump.nil?
+
+    pre, rem = best_bump
+    tail = (0...26).flat_map { |c| [(c + 97).chr] * rem[c] }.join
+    build.call(pre + tail)
+  end
 end
