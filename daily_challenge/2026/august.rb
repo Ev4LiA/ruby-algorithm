@@ -583,4 +583,43 @@ class August2026
     tail = (0...26).flat_map { |c| [(c + 97).chr] * rem[c] }.join
     build.call(pre + tail)
   end
+
+  # 2948. Make Lexicographically Smallest Array by Swapping Elements
+  # @param {Integer[]} nums
+  # @param {Integer} limit
+  # @return {Integer[]}
+  def lexicographically_smallest_array(nums, limit)
+    n = nums.length
+    return nums if n <= 1
+  
+    # Pair each value with its original index
+    paired = nums.each_with_index.map { |val, idx| [val, idx] }
+    # Sort by value
+    paired.sort_by! { |val, _idx| val }
+  
+    # We'll walk through the sorted values and create groups where
+    # consecutive values differ by <= limit.
+    i = 0
+    while i < n
+      j = i
+      # Expand current group while consecutive diffs are <= limit
+      while j + 1 < n && (paired[j + 1][0] - paired[j][0] <= limit)
+        j += 1
+      end
+  
+      # Now [i..j] is a group of values that can be fully permuted.
+      # Collect original indices and group values.
+      indices = paired[i..j].map { |val, idx| idx }.sort
+      values  = paired[i..j].map { |val, idx| val }.sort
+  
+      # Place smallest values at smallest indices to minimize lexicographically.
+      (0...indices.length).each do |k|
+        nums[indices[k]] = values[k]
+      end
+  
+      i = j + 1
+    end
+  
+    nums
+  end
 end
