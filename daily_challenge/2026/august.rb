@@ -591,35 +591,51 @@ class August2026
   def lexicographically_smallest_array(nums, limit)
     n = nums.length
     return nums if n <= 1
-  
+
     # Pair each value with its original index
     paired = nums.each_with_index.map { |val, idx| [val, idx] }
     # Sort by value
     paired.sort_by! { |val, _idx| val }
-  
+
     # We'll walk through the sorted values and create groups where
     # consecutive values differ by <= limit.
     i = 0
     while i < n
       j = i
       # Expand current group while consecutive diffs are <= limit
-      while j + 1 < n && (paired[j + 1][0] - paired[j][0] <= limit)
-        j += 1
-      end
-  
+      j += 1 while j + 1 < n && (paired[j + 1][0] - paired[j][0] <= limit)
+
       # Now [i..j] is a group of values that can be fully permuted.
       # Collect original indices and group values.
       indices = paired[i..j].map { |val, idx| idx }.sort
       values  = paired[i..j].map { |val, idx| val }.sort
-  
+
       # Place smallest values at smallest indices to minimize lexicographically.
       (0...indices.length).each do |k|
         nums[indices[k]] = values[k]
       end
-  
+
       i = j + 1
     end
-  
+
     nums
+  end
+
+  # 2091. Removing Minimum and Maximum From Array
+  # @param {Integer[]} nums
+  # @return {Integer}
+  def minimum_deletions(nums)
+    n = nums.length
+    i = nums.index(nums.min)  # position of minimum
+    j = nums.index(nums.max)  # position of maximum
+
+    lo, hi = [i, j].minmax
+
+    # Three scenarios:
+    both_front = hi + 1                # delete both from the front
+    both_back  = n - lo                # delete both from the back
+    split      = (lo + 1) + (n - hi)   # smaller from front, larger from back
+
+    [both_front, both_back, split].min
   end
 end
