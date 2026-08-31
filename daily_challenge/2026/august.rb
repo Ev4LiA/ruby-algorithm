@@ -638,4 +638,61 @@ class August2026
 
     [both_front, both_back, split].min
   end
+
+  # 2058. Find the Minimum and Maximum Number of Nodes Between Critical Points
+  # Definition for singly-linked list.
+  # class ListNode
+  #     attr_accessor :val, :next
+  #     def initialize(val = 0, _next = nil)
+  #         @val = val
+  #         @next = _next
+  #     end
+  # end
+
+  # @param {ListNode} head
+  # @return {Integer[]}
+  def nodes_between_critical_points(head)
+    result = [-1, -1]
+
+    # Initialize minimum distance to the maximum possible value
+    min_distance = Float::INFINITY
+
+    # Pointers to track the previous node, current node, and indices
+    previous_node = head
+    current_node = head.next
+    current_index = 1
+    previous_critical_index = 0
+    first_critical_index = 0
+
+    while current_node.next
+      # Check if the current node is a local maxima or minima
+      if (current_node.val < previous_node.val &&
+          current_node.val < current_node.next.val) ||
+         (current_node.val > previous_node.val &&
+          current_node.val > current_node.next.val)
+        # If this is the first critical point found
+        if previous_critical_index == 0
+          previous_critical_index = current_index
+          first_critical_index = current_index
+        else
+          # Calculate the minimum distance between critical points
+          min_distance = [min_distance, current_index - previous_critical_index].min
+          previous_critical_index = current_index
+        end
+      end
+
+      # Move to the next node and update indices
+      current_index += 1
+      previous_node = current_node
+      current_node = current_node.next
+    end
+
+    # If at least two critical points were found
+    if min_distance != Float::INFINITY
+      max_distance = previous_critical_index - first_critical_index
+      result = [min_distance, max_distance]
+    end
+
+    result
+  end
 end
