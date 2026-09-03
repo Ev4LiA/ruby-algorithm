@@ -69,4 +69,19 @@ class September2026
   def uniform_array(_nums1)
     true
   end
+
+  # 3876. Construct Uniform Parity Array II
+  # @param {Integer[]} nums1
+  # @return {Boolean}
+  def uniform_array(nums1)
+    has_odd  = nums1.any?(&:odd?)
+    has_even = nums1.any?(&:even?)
+
+    # Already uniform (all odd or all even) — keep every element as-is.
+    return true unless has_odd && has_even
+
+    # Mixed parities: only "all odd" is achievable, and only when the
+    # smallest element is odd (so every even has a smaller odd to subtract).
+    nums1.min.odd?
+  end
 end
