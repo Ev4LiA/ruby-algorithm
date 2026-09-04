@@ -84,4 +84,25 @@ class September2026
     # smallest element is odd (so every even has a smaller odd to subtract).
     nums1.min.odd?
   end
+
+  # 3903. Smallest Stable Index I
+  # @param {Integer[]} nums
+  # @param {Integer} k
+  # @return {Integer}
+  def first_stable_index(nums, k)
+    n = nums.length
+
+    # suffix_min[i] = min(nums[i..n-1])
+    suffix_min = Array.new(n)
+    suffix_min[n - 1] = nums[n - 1]
+    (n - 2).downto(0) { |i| suffix_min[i] = [nums[i], suffix_min[i + 1]].min }
+
+    prefix_max = -Float::INFINITY
+    nums.each_index do |i|
+      prefix_max = [prefix_max, nums[i]].max # max(nums[0..i])
+      return i if prefix_max - suffix_min[i] <= k
+    end
+
+    -1
+  end
 end
