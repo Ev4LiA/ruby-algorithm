@@ -105,4 +105,31 @@ class September2026
 
     -1
   end
+
+  # 3904. Smallest Stable Index II
+  # @param {Integer[]} nums
+  # @param {Integer} k
+  # @return {Integer}
+  def first_stable_index_II(nums, k)
+    max_num = 0
+
+    left_max = []
+    right_min = []
+    nums.each_with_index do |num, i|
+      max_num = [max_num, num].max
+      left_max[i] = max_num
+    end
+
+    min_num = max_num
+    nums.reverse.each_with_index do |num, i|
+      min_num = [min_num, num].min
+      right_min[nums.length - 1 - i] = min_num
+    end
+
+    (0...nums.length).each do |i|
+      return i if (left_max[i] - right_min[i]) <= k
+    end
+
+    -1
+  end
 end
