@@ -132,4 +132,25 @@ class September2026
 
     -1
   end
+
+  # 115. Distinct Subsequences
+  # # @param {String} s
+  # @param {String} t
+  # @return {Integer}
+  def num_distinct(s, t)
+    _ = s.length
+    n = t.length
+    # dp[j] = number of distinct subsequences of s-so-far equal to t[0...j]
+    dp = Array.new(n + 1, 0)
+    dp[0] = 1 # empty t matches once
+
+    s.each_char do |sc|
+      # iterate j downward so each s char is used at most once per state
+      n.downto(1) do |j|
+        dp[j] += dp[j - 1] if sc == t[j - 1]
+      end
+    end
+
+    dp[n]
+  end
 end
