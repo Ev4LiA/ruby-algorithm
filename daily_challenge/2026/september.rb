@@ -153,4 +153,25 @@ class September2026
 
     dp[n]
   end
+
+  # 940. Distinct Subsequences II
+  # @param {String} s
+  # @return {Integer}
+  def distinct_subseq_ii(s)
+    mod = 1_000_000_007
+    # dp = number of distinct non-empty subsequences seen so far
+    dp = 0
+    # last[c] = dp value right before the previous time char c was added
+    last = Hash.new(0)
+
+    s.each_char do |c|
+      prev = dp
+      # new total = (old total * 2 + 1), then subtract the duplicates
+      # contributed the last time this same char was appended
+      dp = ((2 * dp) + 1 - last[c]) % mod
+      last[c] = prev + 1
+    end
+
+    dp % mod
+  end
 end
