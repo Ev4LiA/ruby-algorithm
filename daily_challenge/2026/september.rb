@@ -174,4 +174,11 @@ class September2026
 
     dp % mod
   end
+
+  # 3870. Count Commas in Range
+  # @param {Integer} n
+  # @return {Integer}
+  def count_commas(n)
+    [n - 999, 0].max
+  end
 end
