@@ -181,4 +181,17 @@ class September2026
   def count_commas(n)
     [n - 999, 0].max
   end
+
+  # 3871. Count Commas in Range II
+  # @param {Integer} n
+  # @return {Integer}
+  def count_commas(n)
+    total = 0
+    power = 1000 # 10**3, the first number that needs a comma
+    while power <= n
+      total += n - power + 1 # every value in [power, n] gains one more comma here
+      power *= 1000
+    end
+    total
+  end
 end
