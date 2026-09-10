@@ -194,4 +194,39 @@ class September2026
     end
     total
   end
+
+  # 2265. Count Nodes Equal to Average of Subtree
+  # Definition for a binary tree node.
+  # class TreeNode
+  #     attr_accessor :val, :left, :right
+  #     def initialize(val = 0, left = nil, right = nil)
+  #         @val = val
+  #         @left = left
+  #         @right = right
+  #     end
+  # end
+
+  # @param {TreeNode} root
+  # @return {Integer}
+  def average_of_subtree(root)
+    count = 0
+
+    # Post-order DFS. Returns [sum_of_subtree, node_count].
+    dfs = lambda do |node|
+      return [0, 0] unless node
+
+      left_sum, left_count = dfs.call(node.left)
+      right_sum, right_count = dfs.call(node.right)
+
+      total_sum = left_sum + right_sum + node.val
+      total_count = left_count + right_count + 1
+
+      count += 1 if total_sum / total_count == node.val
+
+      [total_sum, total_count]
+    end
+
+    dfs.call(root)
+    count
+  end
 end
