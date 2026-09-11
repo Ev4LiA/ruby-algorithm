@@ -229,4 +229,29 @@ class September2026
     dfs.call(root)
     count
   end
+
+  # 3483. Unique 3-Digit Even Numbers
+  # @param {Integer[]} digits
+  # @return {Integer}
+  def total_numbers(digits)
+    seen = {}
+    digits.each_index do |i|
+      digits.each_index do |j|
+        next if j == i
+
+        digits.each_index do |k|
+          next if k == i || k == j
+
+          a = digits[i]
+          b = digits[j]
+          c = digits[k]
+          next if a == 0        # no leading zeros
+          next if c.odd?        # must be even
+
+          seen[(a * 100) + (b * 10) + c] = true
+        end
+      end
+    end
+    seen.size
+  end
 end
