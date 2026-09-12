@@ -1,0 +1,29 @@
+class Contest191
+  # Q1. Count Values With Equally Spaced Occurrences I 
+  # @param {Integer[]} nums
+# @return {Integer}
+def count_special_integers(nums)
+  # Map value -> list of indices where it appears
+  positions = Hash.new { |h, k| h[k] = [] }
+
+  nums.each_with_index do |val, idx|
+    positions[val] << idx
+  end
+
+  special_count = 0
+
+  positions.each_value do |idxs|
+    # Must appear exactly 3 times
+    next unless idxs.length == 3
+
+    # Check equally spaced: i2 - i1 == i3 - i2
+    i1, i2, i3 = idxs
+    if (i2 - i1) == (i3 - i2)
+      special_count += 1
+    end
+  end
+
+  special_count
+end
+
+end
