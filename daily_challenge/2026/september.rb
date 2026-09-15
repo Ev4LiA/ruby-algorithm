@@ -255,6 +255,7 @@ class September2026
     seen.size
   end
 
+<<<<<<< HEAD
   # 3414. Maximum Score of Non-overlapping Intervals
   # @param {Integer[][]} intervals
   # @return {Integer[]}
@@ -334,5 +335,40 @@ class September2026
     end
 
     count
+=======
+  # 835. Image Overlap
+  # @param {Integer[][]} img1
+  # @param {Integer[][]} img2
+  # @return {Integer}
+  def largest_overlap(img1, img2)
+    n = img1.length
+    magic = 100 # > max possible offset (since n <= 30)
+    ones1 = []
+    ones2 = []
+
+    # collect coordinates of 1s in both images
+    (0...n).each do |i|
+      (0...n).each do |j|
+        ones1 << [i, j] if img1[i][j] == 1
+        ones2 << [i, j] if img2[i][j] == 1
+      end
+    end
+
+    return 0 if ones1.empty? || ones2.empty?
+
+    counts = Hash.new(0)
+    max_overlap = 0
+
+    # for every pair of 1s, compute translation vector
+    ones1.each do |ax, ay|
+      ones2.each do |bx, by|
+        key = ((ax - bx) * magic) + (ay - by)
+        counts[key] += 1
+        max_overlap = [max_overlap, counts[key]].max
+      end
+    end
+
+    max_overlap
+>>>>>>> 1dd4076d60e4ea6bbc500d07f7930ebf402e97e2
   end
 end
