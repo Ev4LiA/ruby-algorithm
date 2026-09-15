@@ -254,4 +254,85 @@ class September2026
     end
     seen.size
   end
+
+  # 3414. Maximum Score of Non-overlapping Intervals
+  # @param {Integer[][]} intervals
+  # @return {Integer[]}
+  def maximum_weight(intervals)
+    n = intervals.length
+
+    # Original indices sorted by left boundary
+    idx   = (0...n).sort_by { |i| intervals[i][0] }
+    lefts = idx.map { |i| intervals[i][0] }
+
+    # dp[p][k] = [best_score, sorted_indices] using sorted intervals [p..],
+    # picking at most k of them.
+    dp = Array.new(n + 1) { Array.new(5) }
+    (0..4).each { |k| dp[n][k] = [0, []] }
+
+    (n - 1).downto(0) do |p|
+      orig = idx[p]
+      r    = intervals[orig][1]
+      w    = intervals[orig][2]
+
+      # First index q > p whose left boundary is strictly past r (non-overlapping).
+      lo = p + 1
+      hi = n
+      while lo < hi
+        mid = (lo + hi) / 2
+        lefts[mid] > r ? hi = mid : lo = mid + 1
+      end
+      nxt = lo
+
+      (0..4).each do |k|
+        skip = dp[p + 1][k]
+        if k.zero?
+          dp[p][k] = skip
+        else
+          sub  = dp[nxt][k - 1]
+          take = [w + sub[0], (sub[1] + [orig]).sort]
+          dp[p][k] = better(skip, take)
+        end
+      end
+    end
+
+    dp[0][4][1]
+  end
+
+  # Prefer higher score; on ties prefer the lexicographically smaller index array.
+  def better(a, b)
+    return a if a[0] > b[0]
+    return b if b[0] > a[0]
+
+    (a[1] <=> b[1]) <= 0 ? a : b
+  end
+
+  # 2472. Maximum Number of Non-overlapping Palindrome Substrings
+  # @param {String} s
+  # @param {Integer} k
+  # @return {Integer}
+  def max_palindromes(s, k)
+    n = s.length
+    count = 0
+    boundary = 0 # index up to which characters are already consumed
+
+    (0...n).each do |center|
+      # try odd-length (center, center) and even-length (center, center+1)
+      [[center, center], [center, center + 1]].each do |l0, r0|
+        l = l0
+        r = r0
+        while l >= boundary && r < n && s[l] == s[r]
+          if r - l + 1 >= k
+            count += 1
+            boundary = r + 1
+            break
+          end
+          l -= 1
+          r += 1
+        end
+      end
+    end
+
+    count
+  end
 end
