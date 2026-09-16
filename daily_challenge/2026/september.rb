@@ -255,7 +255,6 @@ class September2026
     seen.size
   end
 
-<<<<<<< HEAD
   # 3414. Maximum Score of Non-overlapping Intervals
   # @param {Integer[][]} intervals
   # @return {Integer[]}
@@ -335,7 +334,8 @@ class September2026
     end
 
     count
-=======
+  end
+
   # 835. Image Overlap
   # @param {Integer[][]} img1
   # @param {Integer[][]} img2
@@ -369,6 +369,27 @@ class September2026
     end
 
     max_overlap
->>>>>>> 1dd4076d60e4ea6bbc500d07f7930ebf402e97e2
+  end
+
+  # 1621. Number of Sets of K Non-Overlapping Line Segments
+  # @param {Integer} n
+  # @param {Integer} k
+  # @return {Integer}
+  def number_of_sets(n, k)
+    mod = (10**9) + 7
+
+    # Answer = C(n + k - 1, 2k) mod (1e9 + 7)
+    top = n + k - 1
+    bot = 2 * k
+    return 0 if bot > top
+
+    # Precompute factorials up to top
+    fact = Array.new(top + 1, 1)
+    (1..top).each { |i| fact[i] = fact[i - 1] * i % mod }
+
+    # Modular inverse via Fermat's little theorem
+    inv = ->(a) { a.pow(mod - 2, mod) }
+
+    fact[top] * inv.call(fact[bot]) % mod * inv.call(fact[top - bot]) % mod
   end
 end
