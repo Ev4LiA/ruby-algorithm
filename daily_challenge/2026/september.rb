@@ -401,28 +401,31 @@ class September2026
     n = arr.length
     inf = Float::INFINITY
 
-    # best[i] = min length of a valid subarray within arr[0..i]
-    best = inf
+    # best[i] = shortest valid subarray fully contained in arr[0..i]
+    best = Array.new(n, inf)
     ans  = inf
 
     left = 0
     sum  = 0
+    cur_best = inf
 
     (0...n).each do |right|
       sum += arr[right]
 
-      # shrink window until sum <= target
+      # all values are positive, so shrink from the left safely
       while sum > target
         sum -= arr[left]
         left += 1
       end
 
-      next unless sum == target
+      if sum == target
+        cur_len = right - left + 1
+        # pair with the shortest subarray ending BEFORE `left` → no overlap
+        ans = [ans, cur_len + best[left - 1]].min if left > 0 && best[left - 1] != inf
+        cur_best = [cur_best, cur_len].min
+      end
 
-      cur_len = right - left + 1
-      # pair this subarray with the best one lying entirely to its left
-      ans = [ans, best + cur_len].min if best != inf
-      best = [best, cur_len].min
+      best[right] = cur_best
     end
 
     ans == inf ? -1 : ans
