@@ -392,4 +392,39 @@ class September2026
 
     fact[top] * inv.call(fact[bot]) % mod * inv.call(fact[top - bot]) % mod
   end
+
+  # 1477. Find Two Non-overlapping Sub-arrays Each With Target Sum
+  # @param {Integer[]} arr
+  # @param {Integer} target
+  # @return {Integer}
+  def min_sum_of_lengths(arr, target)
+    n = arr.length
+    inf = Float::INFINITY
+
+    # best[i] = min length of a valid subarray within arr[0..i]
+    best = inf
+    ans  = inf
+
+    left = 0
+    sum  = 0
+
+    (0...n).each do |right|
+      sum += arr[right]
+
+      # shrink window until sum <= target
+      while sum > target
+        sum -= arr[left]
+        left += 1
+      end
+
+      next unless sum == target
+
+      cur_len = right - left + 1
+      # pair this subarray with the best one lying entirely to its left
+      ans = [ans, best + cur_len].min if best != inf
+      best = [best, cur_len].min
+    end
+
+    ans == inf ? -1 : ans
+  end
 end
