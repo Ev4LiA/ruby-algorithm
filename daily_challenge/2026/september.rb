@@ -430,4 +430,58 @@ class September2026
 
     ans == inf ? -1 : ans
   end
+
+  # 1520. Maximum Number of Non-Overlapping Substrings
+  # @param {String} s
+  # @return {String[]}
+  def max_num_of_substrings(s)
+    # seg[c] = [left, right] endpoints for character c (a..z); -1 means unseen
+    seg = Array.new(26) { [-1, -1] }
+
+    # Preprocess the left and right endpoints.
+    s.each_char.with_index do |ch, i|
+      c = ch.ord - 97
+      if seg[c][0] == -1
+        seg[c][0] = seg[c][1] = i
+      else
+        seg[c][1] = i
+      end
+    end
+
+    # Expand each character's interval until it contains every occurrence
+    # of every character inside it.
+    26.times do |c|
+      next if seg[c][0] == -1
+
+      j = seg[c][0]
+      while j <= seg[c][1]
+        d = s[j].ord - 97
+        if seg[c][0] <= seg[d][0] && seg[d][1] <= seg[c][1]
+          j += 1
+          next
+        end
+        seg[c][0] = [seg[c][0], seg[d][0]].min
+        seg[c][1] = [seg[c][1], seg[d][1]].max
+        j = seg[c][0] # restart scan from the new left
+      end
+    end
+
+    # Greedily select intervals: sort by right asc, tie-break left desc.
+    seg.sort! do |a, b|
+      a[1] == b[1] ? b[0] <=> a[0] : a[1] <=> b[1]
+    end
+
+    ans = []
+    finish = -1
+    seg.each do |left, right|
+      next if left == -1
+
+      if finish == -1 || left > finish
+        finish = right
+        ans << s[left..right]
+      end
+    end
+
+    ans
+  end
 end
