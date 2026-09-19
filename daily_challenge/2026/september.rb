@@ -484,4 +484,23 @@ class September2026
 
     ans
   end
+
+  # 1401. Circle and Rectangle Overlapping
+  # @param {Integer} y_center
+  # @param {Integer} x1
+  # @param {Integer} y1
+  # @param {Integer} x2
+  # @param {Integer} y2
+  # @return {Boolean}
+  def check_overlap(radius, x_center, y_center, x1, y1, x2, y2)
+    # Closest point on the rectangle to the circle's center,
+    # found by clamping the center into [x1, x2] x [y1, y2]
+    closest_x = x_center.clamp(x1, x2)
+    closest_y = y_center.clamp(y1, y2)
+
+    dx = x_center - closest_x
+    dy = y_center - closest_y
+
+    (dx * dx) + (dy * dy) <= radius * radius
+  end
 end
