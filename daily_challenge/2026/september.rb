@@ -503,4 +503,11 @@ class September2026
 
     (dx * dx) + (dy * dy) <= radius * radius
   end
+
+  # 3498. Reverse Degree of a String
+  # @param {String} s
+  # @return {Integer}
+  def reverse_degree(s)
+    s.each_char.with_index(1).sum { |c, i| (27 - (c.ord - 96)) * i }
+  end
 end
