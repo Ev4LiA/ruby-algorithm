@@ -510,4 +510,33 @@ class September2026
   def reverse_degree(s)
     s.each_char.with_index(1).sum { |c, i| (27 - (c.ord - 96)) * i }
   end
+
+  # 3524. Find X Value of Array I
+  # @param {Integer[]} nums
+  # @param {Integer} k
+  # @return {Integer[]}
+  def result_array(nums, k)
+    result = Array.new(k, 0)
+    dp = Array.new(k, 0) # dp[r] = # of subarrays ending at current index with product % k == r
+
+    nums.each do |num|
+      m = num % k
+      new_dp = Array.new(k, 0)
+
+      # start a brand-new subarray at this index
+      new_dp[m] += 1
+
+      # extend every subarray ending at the previous index
+      dp.each_with_index do |cnt, r|
+        next if cnt.zero?
+
+        new_dp[(r * m) % k] += cnt
+      end
+
+      dp = new_dp
+      dp.each_with_index { |cnt, r| result[r] += cnt }
+    end
+
+    result
+  end
 end
