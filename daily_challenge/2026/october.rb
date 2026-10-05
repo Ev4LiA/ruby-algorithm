@@ -26,4 +26,22 @@ class October2026
 
     low.zero?
   end
+
+  # 856. Score of Parentheses
+  # @param {String} s
+  # @return {Integer}
+  def score_of_parentheses(s)
+    stack = []
+
+    stack.push(0)
+    s.chars.each do |c|
+      if c == "("
+        stack.push(0)
+      else
+        v = stack.pop
+        stack[-1] += [2 * v, 1].max
+      end
+    end
+    stack[0]
+  end
 end
