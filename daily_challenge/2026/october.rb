@@ -44,4 +44,23 @@ class October2026
     end
     stack[0]
   end
+
+  # 921. Minimum Add to Make Parentheses Valid
+  # @param {String} s
+  # @return {Integer}
+  def min_add_to_make_valid(s)
+    open_brackets = 0
+    min_added = 0
+
+    s.chars.each do |c|
+      if c == "("
+        open_brackets += 1
+      elsif open_brackets.positive?
+        open_brackets -= 1
+      else
+        min_added += 1
+      end
+    end
+    min_added + open_brackets
+  end
 end
