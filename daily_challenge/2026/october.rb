@@ -63,4 +63,21 @@ class October2026
     end
     min_added + open_brackets
   end
+
+  # 1021. Remove Outermost Parentheses
+  # @param {String} s
+  # @return {String}
+  def remove_outer_parentheses(s)
+    res = ""
+    stack = []
+
+    s.each_char do |c|
+      stack.pop if c == ")"
+      res += c unless stack.empty?
+
+      stack << c if c == "("
+    end
+
+    res
+  end
 end
