@@ -80,4 +80,40 @@ class October2026
 
     res
   end
+
+  # 1541. Minimum Insertions to Balance a Parentheses String
+  # @param {String} s
+  # @return {Integer}
+  def min_insertions(s)
+    insertions = 0   # total parentheses we must insert
+    left = 0         # unmatched '(' seen so far
+    i = 0
+    n = s.length
+
+    while i < n
+      if s[i] == "("
+        left += 1
+        i += 1
+      else
+        # need to match this ')' with a '('
+        if left > 0
+          left -= 1
+        else
+          insertions += 1 # no '(' available, insert one
+        end
+
+        # need a consecutive '))' pair
+        if i + 1 < n && s[i + 1] == ")"
+          i += 2            # found the pair
+        else
+          insertions += 1   # insert the second ')'
+          i += 1
+        end
+      end
+    end
+
+    # each leftover '(' still needs '))'
+    insertions += left * 2
+    insertions
+  end
 end
