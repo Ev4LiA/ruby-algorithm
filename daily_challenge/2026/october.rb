@@ -116,4 +116,44 @@ class October2026
     insertions += left * 2
     insertions
   end
+
+  # 2333. Minimum Sum of Squared Difference
+  # @param {Integer[]} nums1
+  # @param {Integer[]} nums2
+  # @param {Integer} k1
+  # @param {Integer} k2
+  # @return {Integer}
+  def min_sum_square_diff(nums1, nums2, k1, k2)
+    k = k1 + k2
+    n = nums1.length
+
+    diffs = Array.new(n)
+    sum = 0
+    n.times do |i|
+      diffs[i] = (nums1[i] - nums2[i]).abs
+      sum += diffs[i]
+    end
+    return 0 if sum <= k
+
+    diffs.sort!
+
+    # d holds the diffs in descending order, with a trailing 0 sentinel at index n
+    d = Array.new(n + 1, 0)
+    n.times { |i| d[i] = diffs[n - 1 - i] }
+
+    (1..n).each do |i|
+      cost = (d[i - 1] - d[i]) * i
+      if cost > k
+        q  = k / i
+        r  = k % i
+        hi = d[i - 1] - q
+        ans = (hi * hi * (i - r)) + ((hi - 1) * (hi - 1) * r)
+        (i...n).each { |j| ans += d[j] * d[j] }
+        return ans
+      end
+      k -= cost
+    end
+
+    0
+  end
 end
