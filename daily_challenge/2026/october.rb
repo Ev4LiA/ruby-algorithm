@@ -156,4 +156,12 @@ class October2026
 
     0
   end
+
+  # 2778. Sum of Squares of Special Elements
+  # @param {Integer[]} nums
+  # @return {Integer}
+  def sum_of_squares(nums)
+    n = nums.length
+    nums.each_index.sum { |i| (n % (i + 1)).zero? ? nums[i]**2 : 0 }
+  end
 end
