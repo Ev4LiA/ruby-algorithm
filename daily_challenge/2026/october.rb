@@ -164,4 +164,33 @@ class October2026
     n = nums.length
     nums.each_index.sum { |i| (n % (i + 1)).zero? ? nums[i]**2 : 0 }
   end
+
+  # 2897. Apply Operations on Array to Maximize Sum of Squares
+  # @param {Integer[]} nums
+  # @param {Integer} k
+  # @return {Integer}
+  def max_sum(nums, k)
+    mod = 1_000_000_007
+    cnt = Array.new(30, 0)
+
+    # Count the number of 1 bits at each position
+    nums.each do |num|
+      30.times { |i| cnt[i] += 1 if num[i] == 1 }
+    end
+
+    res = 0
+    k.times do
+      cur = 0
+      # Build the current number from the most significant bit down
+      29.downto(0) do |j|
+        if cnt[j] > 0
+          cur |= (1 << j)
+          cnt[j] -= 1
+        end
+      end
+      res = (res + (cur * cur)) % mod
+    end
+
+    res
+  end
 end
