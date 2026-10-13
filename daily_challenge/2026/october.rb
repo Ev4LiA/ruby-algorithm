@@ -193,4 +193,15 @@ class October2026
 
     res
   end
+
+  # 3727. Maximum Alternating Sum of Squares
+  # @param {Integer[]} nums
+  # @return {Integer}
+  def max_alternating_sum(nums)
+    squares = nums.map { |x| x * x }.sort
+    n = squares.length
+    half = n / 2
+    # smaller half goes to negative (odd) positions, larger half to positive
+    squares[half..].sum - squares[0...half].sum
+  end
 end
