@@ -204,4 +204,22 @@ class October2026
     # smaller half goes to negative (odd) positions, larger half to positive
     squares[half..].sum - squares[0...half].sum
   end
+
+  # 3723. Maximize Sum of Squares of Digits
+  # @param {Integer} num
+  # @param {Integer} sum
+  # @return {String}
+  def max_sum_of_squares(num, sum)
+    return "" if sum > 9 * num
+
+    digits = Array.new(num, 0)
+    i = 0
+    while sum > 0
+      d = [9, sum].min
+      digits[i] = d
+      sum -= d
+      i += 1
+    end
+    digits.join
+  end
 end
