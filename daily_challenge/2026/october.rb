@@ -222,4 +222,22 @@ class October2026
     end
     digits.join
   end
+
+  # 2913. Subarrays Distinct Element Sum of Squares I
+  # @param {Integer[]} nums
+  # @return {Integer}
+  def sum_counts(nums)
+    n = nums.length
+    res = 0
+
+    (0...n).each do |i|
+      seen = {}
+      (i...n).each do |j|
+        seen[nums[j]] = true
+        res += seen.size * seen.size
+      end
+    end
+
+    res
+  end
 end
