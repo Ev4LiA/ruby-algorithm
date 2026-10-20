@@ -302,11 +302,11 @@ class October2025
   # Helper method to calculate (base^exp) % mod efficiently
   def power_mod(base, exp, mod)
     result = 1
-    base = base % mod
+    base %= mod
 
     while exp > 0
       result = (result * base) % mod if exp.odd?
-      exp = exp >> 1
+      exp >>= 1
       base = (base * base) % mod
     end
 
@@ -429,5 +429,69 @@ class October2025
       i += 1
     end
     res
+  end
+
+  # 2089. Find Target Indices After Sorting Array
+  # @param {Integer[]} nums
+  # @param {Integer} target
+  # @return {Integer[]}
+  def target_indices(nums, target)
+    res = []
+    nums.sort!.each_with_index do |num, i|
+      res << i if num == target
+    end
+
+    res
+  end
+
+  # 3886. Sum of Sortable Integers
+  # @param {Integer[]} nums
+  # @return {Integer}
+  def sortable_integers(nums)
+    n = nums.length
+    target = nums.sort
+
+    # Collect all divisors of n in O(√n)
+    divisors = []
+    i = 1
+    while i * i <= n
+      if n % i == 0
+        divisors << i
+        divisors << (n / i) if i != n / i
+      end
+      i += 1
+    end
+
+    divisors.sum { |k| sortable?(nums, target, k) ? k : 0 }
+  end
+
+  # Can each block of length k be cyclically rotated to match target?
+  def sortable?(nums, target, k)
+    n = nums.length
+    s = 0
+    while s < n
+      # Find the first decrease in the block; rotate so the element after it comes first
+      r = 0
+      j = s
+      last = s + k - 1
+      while j < last
+        if nums[j] > nums[j + 1]
+          r = j + 1 - s
+          break
+        end
+        j += 1
+      end
+
+      # Compare the rotated block with the target block, without slicing
+      t = 0
+      while t < k
+        return false if nums[s + ((r + t) % k)] != target[s + t]
+
+        t += 1
+      end
+
+      s += k
+    end
+    true
   end
 end
