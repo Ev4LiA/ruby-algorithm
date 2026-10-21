@@ -494,4 +494,29 @@ class October2025
     end
     true
   end
+
+  # 3863. Minimum Operations to Sort a String
+  # @param {String} s
+  # @return {Integer}
+  def min_operations(s)
+    n = s.length
+
+    # Case 1: already sorted
+    return 0 if (0...n - 1).all? { |i| s[i] <= s[i + 1] }
+
+    # Case 2: length 2 and unsorted, so the only allowed sorts are single characters
+    return -1 if n == 2
+
+    mn, mx = s.chars.minmax
+
+    # Case 3: smallest is already first, or largest is already last
+    return 1 if s[0] == mn || s[-1] == mx
+
+    # Case 5: a smallest or largest character sits in the middle
+    mid = s[1...n - 1]
+    return 2 if mid.include?(mn) || mid.include?(mx)
+
+    # Case 4: largest appears only at the front and smallest only at the back
+    3
+  end
 end
