@@ -519,4 +519,31 @@ class October2025
     # Case 4: largest appears only at the front and smallest only at the back
     3
   end
+
+  # 3942. Minimum Operations to Sort a Permutation
+  # @param {Integer[]} nums
+  # @return {Integer}
+  def min_operations(nums)
+    n = nums.size
+    i0 = nums.index(0)
+
+    inc = (0...n).all? { |k| nums[(i0 + k) % n] == k }
+    dec = (0...n).all? { |k| nums[(i0 - k) % n] == k }
+
+    candidates = []
+    candidates.push(i0, n - i0 + 2) if inc # rotate left i0 times, or reverse + rotate + reverse
+    candidates.push(i0 + 2, n - i0) if dec # rotate i0+1 times then reverse, or reverse then rotate
+    candidates.empty? ? -1 : candidates.min
+  end
+
+  # 3644. Maximum K to Sort a Permutation
+  # @param {Integer[]} nums
+  # @return {Integer}
+  def sort_permutation(nums)
+    k = -1                      # in Ruby, -1 has every bit set, so it doesn't change an AND
+    nums.each_with_index do |x, i|
+      k &= x if x != i          # only AND together elements that are in the wrong place
+    end
+    k == -1 ? 0 : k             # nothing was misplaced, so the array is already sorted
+  end
 end
