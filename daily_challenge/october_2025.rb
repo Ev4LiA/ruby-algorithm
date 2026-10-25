@@ -546,4 +546,47 @@ class October2025
     end
     k == -1 ? 0 : k             # nothing was misplaced, so the array is already sorted
   end
+
+  # 1254. Number of Closed Island
+  # @param {Integer[][]} grid
+  # @return {Integer}
+  DIRS = [[1, 0], [-1, 0], [0, 1], [0, -1]].freeze
+
+  def closed_island(grid)
+    m = grid.size
+    n = grid[0].size
+    count = 0
+
+    (0...m).each do |i|
+      (0...n).each do |j|
+        next unless grid[i][j] == 0
+
+        count += 1 if closed?(grid, i, j, m, n)
+      end
+    end
+
+    count
+  end
+
+  def closed?(grid, si, sj, m, n)
+    stack = [[si, sj]]
+    grid[si][sj] = 1          # mark visited
+    closed = true
+
+    until stack.empty?
+      x, y = stack.pop
+      DIRS.each do |dx, dy|
+        r = x + dx
+        c = y + dy
+        if r < 0 || r >= m || c < 0 || c >= n
+          closed = false      # touched the edge, but keep exploring
+        elsif grid[r][c].zero?
+          grid[r][c] = 1
+          stack << [r, c]
+        end
+      end
+    end
+
+    closed
+  end
 end
