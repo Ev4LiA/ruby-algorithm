@@ -589,4 +589,50 @@ class October2025
 
     closed
   end
+
+  # 3619. Count Islands With Total Value Divisible by K
+  # @param {Integer[][]} grid
+  # @param {Integer} k
+  # @return {Integer}
+  def count_islands(grid, k)
+    m = grid.size
+    n = grid[0].size
+    ans = 0
+
+    (0...m).each do |i|
+      (0...n).each do |j|
+        if grid[i][j] > 0
+          sum = call(grid, i, j, m, n)
+          ans += 1 if sum % k == 0
+        end
+      end
+    end
+
+    ans
+  end
+
+  def call(grid, si, sj, rows, cols)
+    stack = [[si, sj]]
+    sum = grid[si][sj]
+    grid[si][sj] = 0
+
+    until stack.empty?
+      i, j = stack.pop
+
+      DIRS.each do |dx, dy|
+        x = i + dx
+        y = j + dy
+
+        next if x < 0 || x >= rows || y < 0 || y >= cols
+
+        next unless grid[x][y] > 0
+
+        sum += grid[x][y]
+        stack << [x, y]
+        grid[x][y] = 0
+      end
+    end
+
+    sum
+  end
 end
