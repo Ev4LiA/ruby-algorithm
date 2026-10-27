@@ -635,4 +635,22 @@ class October2025
 
     sum
   end
+
+  # 3963. Create Grid With Exactly One Path
+  # @param {Integer} m
+  # @param {Integer} n
+  # @return {String[]}
+  def create_grid(m, n)
+    grid = Array.new(m) { Array.new(n, "#") }
+
+    (0...n).each do |j|
+      grid[0][j] = "."
+    end
+
+    (0...m).each do |i|
+      grid[i][n - 1] = "."
+    end
+
+    grid.map(&:join)
+  end
 end
