@@ -653,4 +653,92 @@ class October2025
 
     grid.map(&:join)
   end
+
+  # 3970. Shortest Path With At Most K Consecutive Identical Characters
+  # @param {Integer} n
+  # @param {Integer[][]} edges
+  # @param {String} labels
+  # @param {Integer} k
+  # @return {Integer}
+  def shortest_path(n, edges, labels, k)
+    g = Array.new(n) { [] }
+    edges.each do |u, v, w|
+      g[u] << [v, w]
+    end
+
+    inf = (2**31) - 1 # Integer.MAX_VALUE
+    dis = Array.new(n) { Array.new(k + 1, inf) }
+
+    # [shortest path length, node index, number of consecutive identical letters at the end]
+    pq = MinHeap.new
+
+    dis[0][1] = 0
+    pq.push([0, 0, 1])
+
+    until pq.empty?
+      d, x, cnt = pq.pop
+
+      next if d > dis[x][cnt]
+      return d if x == n - 1
+
+      g[x].each do |y, w|
+        new_cnt = labels[x] == labels[y] ? cnt + 1 : 1
+        next if new_cnt > k
+
+        nd = d + w
+        if nd < dis[y][new_cnt]
+          dis[y][new_cnt] = nd
+          pq.push([nd, y, new_cnt])
+        end
+      end
+    end
+
+    -1
+  end
+
+  # Min-heap ordered by the first element of each entry (stands in for Java's PriorityQueue)
+  class MinHeap
+    def initialize
+      @h = []
+    end
+
+    def empty?
+      @h.empty?
+    end
+
+    def push(item)
+      @h << item
+      i = @h.size - 1
+      while i > 0
+        p = (i - 1) / 2
+        break if @h[p][0] <= item[0]
+
+        @h[i] = @h[p]
+        i = p
+      end
+      @h[i] = item
+    end
+
+    def pop
+      top = @h[0]
+      last = @h.pop
+      return top if @h.empty?
+
+      size = @h.size
+      i = 0
+      loop do
+        l = (2 * i) + 1
+        break if l >= size
+
+        r = l + 1
+        c = r < size && @h[r][0] < @h[l][0] ? r : l
+        break if @h[c][0] >= last[0]
+
+        @h[i] = @h[c]
+        i = c
+      end
+      @h[i] = last
+      top
+    end
+  end
 end
