@@ -14,4 +14,12 @@ class November2026
     median = nums[nums.size / 2]
     nums.sum { |x| (x - median).abs }
   end
+
+  # 3736. Minimum Moves to Equal Array Elements III
+  # @param {Integer[]} nums
+  # @return {Integer}
+  def min_moves3(nums)
+    max = nums.max
+    (max * nums.size) - nums.sum
+  end
 end
