@@ -66,4 +66,45 @@ class November2026
     end
     low
   end
+
+  # 2747. Count Zero Request Servers
+  # @param {Integer} n
+  # @param {Integer[][]} logs
+  # @param {Integer} x
+  # @param {Integer[]} queries
+  # @return {Integer[]}
+  def count_servers(n, logs, x, queries)
+    logs.sort_by! { |_, t| t }
+    order = (0...queries.size).sort_by { |i| queries[i] }
+
+    cnt = Array.new(n + 1, 0)
+    ans = Array.new(queries.size)
+    active = 0
+    left = right = 0
+    m = logs.size
+
+    order.each do |i|
+      q = queries[i]
+
+      # Add logs with time <= q
+      while right < m && logs[right][1] <= q
+        s = logs[right][0]
+        active += 1 if cnt[s] == 0
+        cnt[s] += 1
+        right += 1
+      end
+
+      # Remove logs with time < q - x
+      while left < right && logs[left][1] < q - x
+        s = logs[left][0]
+        cnt[s] -= 1
+        active -= 1 if cnt[s] == 0
+        left += 1
+      end
+
+      ans[i] = n - active
+    end
+
+    ans
+  end
 end
