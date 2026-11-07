@@ -107,4 +107,88 @@ class November2026
 
     ans
   end
+
+  # 1882. Process Tasks Using Servers
+  # @param {Integer[]} servers
+  # @param {Integer[]} tasks
+  # @return {Integer[]}
+  def assign_tasks(servers, tasks)
+    n = servers.size
+    free = MinHeap.new   # key = weight * n + index
+    busy = MinHeap.new   # key = free_time * n + index
+    servers.each_with_index { |w, i| free.push(w * n + i) }
+
+    ans = Array.new(tasks.size)
+    time = 0
+
+    tasks.each_with_index do |d, j|
+      time = j if time < j
+
+      # If nothing is free, jump ahead to when the next server frees up
+      time = busy.top / n if free.empty?
+
+      # Release every server that is free by `time`
+      while !busy.empty? && busy.top / n <= time
+        i = busy.pop % n
+        free.push(servers[i] * n + i)
+      end
+
+      i = free.pop % n
+      ans[j] = i
+      busy.push((time + d) * n + i)
+    end
+
+    ans
+  end
+
+  # Binary min-heap over plain integers (stands in for Java's PriorityQueue)
+  class MinHeap
+    def initialize
+      @a = []
+    end
+
+    def empty?
+      @a.empty?
+    end
+
+    def top
+      @a[0]
+    end
+
+    def push(x)
+      a = @a
+      a << x
+      i = a.size - 1
+      while i > 0
+        p = (i - 1) >> 1
+        break if a[p] <= a[i]
+
+        a[p], a[i] = a[i], a[p]
+        i = p
+      end
+    end
+
+    def pop
+      a = @a
+      top = a[0]
+      last = a.pop
+      unless a.empty?
+        a[0] = last
+        i = 0
+        n = a.size
+        loop do
+          l = 2 * i + 1
+          break if l >= n
+
+          r = l + 1
+          c = (r < n && a[r] < a[l]) ? r : l
+          break if a[i] <= a[c]
+
+          a[i], a[c] = a[c], a[i]
+          i = c
+        end
+      end
+      top
+    end
+  end
 end
