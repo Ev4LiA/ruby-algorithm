@@ -116,7 +116,7 @@ class November2026
     n = servers.size
     free = MinHeap.new   # key = weight * n + index
     busy = MinHeap.new   # key = free_time * n + index
-    servers.each_with_index { |w, i| free.push(w * n + i) }
+    servers.each_with_index { |w, i| free.push((w * n) + i) }
 
     ans = Array.new(tasks.size)
     time = 0
@@ -130,12 +130,12 @@ class November2026
       # Release every server that is free by `time`
       while !busy.empty? && busy.top / n <= time
         i = busy.pop % n
-        free.push(servers[i] * n + i)
+        free.push((servers[i] * n) + i)
       end
 
       i = free.pop % n
       ans[j] = i
-      busy.push((time + d) * n + i)
+      busy.push(((time + d) * n) + i)
     end
 
     ans
@@ -177,11 +177,11 @@ class November2026
         i = 0
         n = a.size
         loop do
-          l = 2 * i + 1
+          l = (2 * i) + 1
           break if l >= n
 
           r = l + 1
-          c = (r < n && a[r] < a[l]) ? r : l
+          c = r < n && a[r] < a[l] ? r : l
           break if a[i] <= a[c]
 
           a[i], a[c] = a[c], a[i]
@@ -190,5 +190,35 @@ class November2026
       end
       top
     end
+  end
+
+  # 1267. Count Servers that Communicate
+  # @param {Integer[][]} grid
+  # @return {Integer}
+  def count_servers(grid)
+    m = grid.size
+    n = grid[0].size
+    row_count = Array.new(m, 0)
+    col_count = Array.new(n, 0)
+
+    # First pass: count servers in each row and column
+    grid.each_with_index do |row, i|
+      row.each_with_index do |cell, j|
+        next if cell.zero?
+
+        row_count[i] += 1
+        col_count[j] += 1
+      end
+    end
+
+    # Second pass: count servers that share a row or column with another server
+    count = 0
+    grid.each_with_index do |row, i|
+      row.each_with_index do |cell, j|
+        count += 1 if cell == 1 && (row_count[i] > 1 || col_count[j] > 1)
+      end
+    end
+
+    count
   end
 end
