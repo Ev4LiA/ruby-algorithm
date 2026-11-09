@@ -221,4 +221,34 @@ class November2026
 
     count
   end
+
+  # 1606. Find Servers That Handled Most Number of Requests
+  # @param {Integer} k
+  # @param {Integer[]} arrival
+  # @param {Integer[]} load
+  # @return {Integer[]}
+  def busiest_servers(k, arrival, load)
+    count = Array.new(k, 0)
+    avail = MinHeap.new
+    k.times { |s| avail.push(s) }
+    busy = MinHeap.new # stores end_time * k + server
+
+    arrival.each_with_index do |t, i|
+      # Free every server whose job has finished by time t
+      while !busy.empty? && busy.top / k <= t
+        s = busy.pop % k
+        # Key = first request index >= i that maps to server s
+        avail.push(i + ((s - i) % k))
+      end
+
+      next if avail.empty? # all busy, so the request is dropped
+
+      s = avail.pop % k
+      count[s] += 1
+      busy.push(((t + load[i]) * k) + s)
+    end
+
+    mx = count.max
+    (0...k).select { |s| count[s] == mx }
+  end
 end
