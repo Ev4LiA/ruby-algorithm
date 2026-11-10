@@ -251,4 +251,24 @@ class November2026
     mx = count.max
     (0...k).select { |s| count[s] == mx }
   end
+
+  # 3693. Climbing Stairs II
+  # @param {Integer} n
+  # @param {Integer[]} costs
+  # @return {Integer}
+  def climb_stairs(n, costs)
+    inf = 1 << 60
+    a = inf
+    b = inf
+    c = 0 # dp[j-3], dp[j-2], dp[j-1]; starts with dp[0] = 0
+
+    (1..n).each do |j|
+      cur = costs[j - 1] + [c + 1, b + 4, a + 9].min
+      a = b
+      b = c
+      c = cur
+    end
+
+    c
+  end
 end
