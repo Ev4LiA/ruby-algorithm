@@ -271,4 +271,24 @@ class November2026
 
     c
   end
+
+  # 3789. Minimum Cost to Acquire Required Items
+  # @param {Integer} cost1
+  # @param {Integer} cost2
+  # @param {Integer} cost_both
+  # @param {Integer} need1
+  # @param {Integer} need2
+  # @return {Integer}
+  def minimum_cost(cost1, cost2, cost_both, need1, need2)
+    shared = [need1, need2].min
+
+    # Units needed by both types: one type-3 item, or one type-1 plus one type-2
+    total = shared * [cost_both, cost1 + cost2].min
+
+    # Units still needed by only one type: a type-3 item can be cheaper than the single item
+    total += (need1 - shared) * [cost_both, cost1].min
+    total += (need2 - shared) * [cost_both, cost2].min
+
+    total
+  end
 end
