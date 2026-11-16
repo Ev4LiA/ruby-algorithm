@@ -291,4 +291,13 @@ class November2026
 
     total
   end
+
+  # 2243. Calculate Digit Sum of a String
+  # @param {String} s
+  # @param {Integer} k
+  # @return {String}
+  def digit_sum(s, k)
+    s = s.chars.each_slice(k).map { |group| group.sum(&:to_i) }.join while s.length > k
+    s
+  end
 end

@@ -99,10 +99,10 @@ class Contest528
         a = node << 1
         b = a | 1
         node = if from_right
-          (tree[b] & mask) == mask ? a : b
-        else
-          (tree[a] & mask) == mask ? b : a
-        end
+                 (tree[b] & mask) == mask ? a : b
+               else
+                 (tree[a] & mask) == mask ? b : a
+               end
       end
       return node - size
     end
@@ -146,10 +146,10 @@ class Contest528
       # Zeroing a child drops that whole subtree to 0. op 1 must pick one,
       # op 0 takes it only when the subtree's best value is negative.
       best[u] = if op[u] == 1
-        score[u] + total - low
-      else
-        score[u] + total - [0, low].min
-      end
+                  score[u] + total - low
+                else
+                  score[u] + total - [0, low].min
+                end
     end
 
     best[0]
