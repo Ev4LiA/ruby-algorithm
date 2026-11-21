@@ -300,4 +300,41 @@ class November2026
     s = s.chars.each_slice(k).map { |group| group.sum(&:to_i) }.join while s.length > k
     s
   end
+
+  # 3331. Find Subtree Sizes After Changes
+  # @param {Integer[]} parent
+  # @param {String} s
+  # @return {Integer[]}
+  def find_subtree_sizes(parent, s)
+    n = parent.size
+    children = Array.new(n) { [] }
+    (1...n).each { |i| children[parent[i]] << i }
+
+    chars = s.bytes.map { |b| b - 97 }
+    last = Array.new(26, -1)        # nearest ancestor for each letter on the current path
+    saved = Array.new(n)            # value of last[c] before entering a node
+    new_parent = parent.dup
+    order = []                      # preorder of the original tree
+
+    stack = [0]
+    until stack.empty?
+      node = stack.pop
+      if node >= 0
+        c = chars[node]
+        saved[node] = last[c]
+        new_parent[node] = last[c] if node != 0 && last[c] != -1
+        last[c] = node
+        order << node
+        stack << ~node              # exit marker (~node is negative)
+        children[node].each { |ch| stack << ch }
+      else
+        node = ~node
+        last[chars[node]] = saved[node] # put back the value from before this node
+      end
+    end
+
+    size = Array.new(n, 1)
+    order.reverse_each { |v| size[new_parent[v]] += size[v] if v != 0 }
+    size
+  end
 end
